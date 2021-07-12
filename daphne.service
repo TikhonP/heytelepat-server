@@ -1,0 +1,15 @@
+[Unit]
+Description=WebSocket Daphne Service
+After=network.target
+
+[Service]
+Environment=DJANGO_SETTINGS_MODULE=***REMOVED***.settings
+Type=simple
+User=root
+WorkingDirectory=/home/***REMOVED***/***REMOVED***-server
+ExecStart=/home/***REMOVED***/***REMOVED***-server/env/bin/python /home/***REMOVED***/***REMOVED***-server/env/bin/daphne -b 0.0.0.0 -p 8001 ***REMOVED***.asgi:application
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
