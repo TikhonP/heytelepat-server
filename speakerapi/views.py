@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from medsenger_agent.models import Speaker, Task
+from medsenger_agent.models import Speaker, Task, Message
 from rest_framework import generics
 from speakerapi import serializers
 from django.core import exceptions
@@ -10,6 +10,7 @@ from rest_framework import status
 import json
 from django.conf import settings
 import medsenger_api
+from django.core import serializers as dj_serializers
 
 
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
@@ -132,7 +133,7 @@ class CheckAuthApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 """
 
-"""
+
 class IncomingMessageNotifyApiView(APIView):
     serializer_class = serializers.IncomingMessageNotify
 
@@ -176,7 +177,6 @@ class IncomingMessageNotifyApiView(APIView):
                 return HttpResponse(text)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-"""
 
 
 class GetListOfAllCategories(APIView):
