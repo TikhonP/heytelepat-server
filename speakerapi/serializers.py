@@ -29,7 +29,9 @@ class CheckAuthSerializer(serializers.Serializer):
 
 class IncomingMessageNotify(serializers.Serializer):
     token = serializers.CharField()
-    last_messages = serializers.BooleanField()
+    notified_message = serializers.BooleanField(required=False)
+    message_id = serializers.IntegerField(required=False)
+    red_message = serializers.BooleanField(required=False)
 
 
 class GetListOfAllCategories(serializers.Serializer):

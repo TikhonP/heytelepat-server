@@ -3,7 +3,7 @@ Description=WebSocket Daphne Service
 After=network.target
 
 [Service]
-Environment=DJANGO_SETTINGS_MODULE=***REMOVED***.settings
+Environment=DJANGO_SETTINGS_MODULE=***REMOVED***.settings.production
 Type=simple
 User=root
 WorkingDirectory=/home/***REMOVED***/***REMOVED***-server

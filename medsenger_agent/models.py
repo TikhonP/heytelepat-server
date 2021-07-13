@@ -4,7 +4,7 @@ import random
 
 
 class Contract(models.Model):
-    contract_id = models.IntegerField(unique=True)
+    contract_id = models.IntegerField(unique=True, primary_key=True)
     speaker_active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -60,6 +60,28 @@ class Task(models.Model):
 
     def __str__(self):
         return "{} - {}".format(self.alias, self.contract.contract_id)
+
+
+class MeasurementTaskGeneric(models.Model):
+    uid = models.CharField(max_length=255, unique=True)
+    category = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True)
+    max_value = models.FloatField(null=True)
+    min_value = models.FloatField(null=True)
+    text = models.CharField(max_length=255)
+    value_type = models.CharField(max_length=255)
+
+
+class MeasurementTask(models.Model):
+    title = models.CharField(max_length=255)
+    doctor_description = models.TextField()
+    patient_description = models.TextField()
+    thanks_text = models.TextField(null=True)
+    contract_id = models.ForeignKey(Contract, on_delete=models.CASCADE)
+    fields = models.ManyToManyField(MeasurementTaskGeneric)
+
+    is_sent = models.BooleanField(default=False)
+    is_done = models.BooleanField(default=False)
 
 
 class Message(models.Model):

@@ -6,6 +6,7 @@ After=network.target
 [Service]
 User=***REMOVED***
 Group=www-data
+Environment=DJANGO_SETTINGS_MODULE=***REMOVED***.settings.production
 WorkingDirectory=/home/***REMOVED***/***REMOVED***-server
 ExecStart=/home/***REMOVED***/***REMOVED***-server/env/bin/gunicorn \
           --access-logfile - \
