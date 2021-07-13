@@ -7,8 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/3.1/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/3.1/ref/settings/
-"""
+https://docs.djangoproject.com/en/3.1/ref/settings/ """
 
 from pathlib import Path
 import os.path
@@ -78,22 +77,7 @@ TEMPLATES = [
 WSGI_APPLICATION = '***REMOVED***.wsgi.application'
 ASGI_APPLICATION = '***REMOVED***.asgi.application'
 
-"""
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
-        },
-    },
-}
-"""
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
