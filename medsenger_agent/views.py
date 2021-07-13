@@ -1,23 +1,26 @@
-from django.http import HttpResponse
-from django.views.decorators.http import require_http_methods
 import json
-from django.conf import settings
-from medsenger_agent.models import Contract, Speaker, Message
-from medsenger_agent import agent_api
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
-from django.core import exceptions
-
-from rest_framework.views import APIView
-from medsenger_agent import serializers
-from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
-from django.utils import timezone
 import datetime
 import medsenger_api
 
+from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from django.shortcuts import render
+from django.core import exceptions
+from django.utils import timezone
+
+from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError, NotFound
+
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+
+from medsenger_agent import serializers
+from medsenger_agent.models import Contract, Speaker, Message
+from medsenger_agent import agent_api
 
 
 APP_KEY = settings.APP_KEY
@@ -32,66 +35,47 @@ invalid_key_response.status_code = 400
 aac = medsenger_api.AgentApiClient(APP_KEY)
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
-def init(request):
-    data = json.loads(request.body)
+class InitAPIView(CreateAPIView):
+    serializer_class = serializers.ContractCreateSerializer
 
-    if data['api_key'] != APP_KEY:
-        return invalid_key_response
-
-    try:
-        contract = Contract.objects.get(contract_id=data['contract_id'])
-    except exceptions.ObjectDoesNotExist:
-        contract = Contract.objects.create(
-            contract_id=data['contract_id'])
-        contract.save()
-
-    aac.send_message(
-        contract.contract_id,
-        "Зарегистрируйте новое устройство",
-        "newdevice", "Добавить", only_patient=True, action_big=True)
-    aac.send_order(contract.contract_id, 'get_settings',  12)
-
-    return HttpResponse("ok")
+    def post(self, request, *args, **kwargs):
+        self.create(request, *args, **kwargs)
+        return HttpResponse("ok")
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
-def remove(request):
-    data = json.loads(request.body)
+class RemoveContractAPIView(GenericAPIView):
+    serializer_class = serializers.ContractRemoveSerializer
+    queryset = Contract.objects.all()
 
-    if data['api_key'] != APP_KEY:
-        return invalid_key_response
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
 
-    try:
-        contract = Contract.objects.get(contract_id=data['contract_id'])
-    except exceptions.ObjectDoesNotExist:
-        response = HttpResponse(json.dumps({
-            'status': 400, 'reason': 'there is no such object'
-        }), content_type='application/json')
-        response.status_code = 400
-        return response
+        if serializer.is_valid(raise_exception=True):
+            try:
+                instance = self.get_queryset().get(
+                    contract_id=serializer.data['contract_id'])
+            except Contract.DoesNotExist:
+                raise NotFound(detail="Object not found")
+            instance.delete()
 
-    contract.delete()
-
-    return HttpResponse("ok")
+            return HttpResponse('ok')
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
-def status(request):
-    data = json.loads(request.body)
+class StatusAPIView(GenericAPIView):
+    serializer_class = serializers.StatusSerializer
+    queryset = Contract.objects.all()
 
-    if data['api_key'] != APP_KEY:
-        return invalid_key_response
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
 
-    response = HttpResponse(json.dumps({
-        'is_tracking_data': True,
-        'supported_scenarios': [],
-        'tracked_contracts': [i.contract_id for i in Contract.objects.all()]
-    }), content_type="application/json")
-    return response
+        if serializer.is_valid(raise_exception=True):
+            data = {
+                'is_tracking_data': True,
+                'supported_scenarios': [],
+                'tracked_contracts': [
+                    i.contract_id for i in self.get_queryset()]
+            }
+            return Response(data)
 
 
 @require_http_methods(["GET", "POST"])
@@ -208,15 +192,16 @@ def order(request):
     return HttpResponse("ok")
 
 
+class OrderApiView(CreateAPIView):
+    serializer_class = serializers.TaskSerializer
+
+
 class IncomingMessageApiView(APIView):
     serializer_class = serializers.MessageSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            if serializer.data['api_key'] != APP_KEY:
-                raise ValidationError(detail='Invalid token')
-
+        if serializer.is_valid(raise_exception=True):
             try:
                 contract = Contract.objects.get(
                     contract_id=serializer.data['contract_id'])
@@ -249,5 +234,3 @@ class IncomingMessageApiView(APIView):
             )
 
             return HttpResponse("ok")
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

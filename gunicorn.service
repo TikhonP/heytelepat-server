@@ -6,6 +6,7 @@ After=network.target
 [Service]
 User=tikhon
 Group=www-data
+Environment=DJANGO_SETTINGS_MODULE=heytelepat.settings.production
 WorkingDirectory=/home/tikhon/heytelepat-server
 ExecStart=/home/tikhon/heytelepat-server/env/bin/gunicorn \
           --access-logfile - \
