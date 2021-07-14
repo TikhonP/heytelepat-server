@@ -1,11 +1,12 @@
 from rest_framework import serializers
-from medsenger_agent.models import Task
+
+from medsenger_agent.models import Message
 
 
-class TaskSerializer(serializers.ModelSerializer):
+class MessageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Task
-        fields = '__all__'
+        model = Message
+        fields = ('text', 'id',)
 
 
 class CommentSerializer(serializers.Serializer):
@@ -14,8 +15,8 @@ class CommentSerializer(serializers.Serializer):
 
 
 class DataSendValuesSerializer(serializers.Serializer):
-    category_name = serializers.CharField(),
-    value = serializers.CharField(),
+    category_name = serializers.CharField()
+    value = serializers.CharField()
 
 
 class SendValueSerializer(serializers.Serializer):

@@ -8,6 +8,5 @@ urlpatterns = [
     path('settings', views.settings),
     path('message', views.IncomingMessageApiView.as_view()),
     path('newdevice', views.newdevice),
-    path('order', views.order),
-    path('order_test/', views.OrderApiView.as_view()),
+    path('order', views.OrderApiView.as_view()),
 ]
