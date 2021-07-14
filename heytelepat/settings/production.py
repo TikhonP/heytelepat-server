@@ -17,3 +17,14 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '***REMOVED***',
+        'USER': '***REMOVED***user',
+        'PASSWORD': '***REMOVED***',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}

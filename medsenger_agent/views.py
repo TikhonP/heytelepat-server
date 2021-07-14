@@ -6,21 +6,26 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core import exceptions
 from django.utils import timezone
 
-from rest_framework.views import APIView
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError, NotFound
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 from medsenger_agent import serializers
-from medsenger_agent.models import Contract, Speaker, Message
-from medsenger_agent import agent_api
+from medsenger_agent.models import (
+    Contract,
+    Speaker,
+    Message,
+    MeasurementTask,
+    MeasurementTaskGeneric,
+    MedicineTaskGeneric,
+)
 
 
 APP_KEY = settings.APP_KEY
@@ -51,11 +56,10 @@ class RemoveContractAPIView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
-            try:
-                instance = self.get_queryset().get(
-                    contract_id=serializer.data['contract_id'])
-            except Contract.DoesNotExist:
-                raise NotFound(detail="Object not found")
+            instance = get_object_or_404(
+                self.get_queryset(),
+                contract_id=serializer.data['contract_id']
+            )
             instance.delete()
 
             return HttpResponse('ok')
@@ -141,6 +145,9 @@ def newdevice(request):
         speaker.contract = contract
         speaker.save()
 
+        contract.speaker_active = True
+        contract.save()
+
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             'auth_%s' % speaker.id,
@@ -150,66 +157,56 @@ def newdevice(request):
         return render(request, 'done_add_device.html')
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
-def order(request):
-    data = json.loads(request.body)
-    print(data)
-
-    if data['api_key'] != APP_KEY:
-        return invalid_key_response
-
-    try:
-        contract = Contract.objects.get(contract_id=data['contract_id'])
-    except exceptions.ObjectDoesNotExist:
-        response = HttpResponse(json.dumps({
-            'status': 400,
-            'reason': 'COntract_id does not exist, add agent to this chat'
-        }), content_type='application/json')
-        response.status_code = 400
-        return response
-
-    for measurement in data['params']['measurements']:
-        time = None
-        if measurement['mode'] == 'daily':
-            time = measurement['timetable'][0]['hours']
-        elif measurement['mode'] == 'weekly':
-            time = measurement['timetable'][0]['days_week']
-        else:
-            time = measurement['timetable'][0]['days_month']
-
-        for t in time:
-            instance = agent_api.get_instance(
-                contract,
-                measurement['name'],
-                measurement['mode'],
-                t
-            )
-            instance = agent_api.check_insatce_task_measurement(
-                instance, measurement)
-            instance.save()
-
-    return HttpResponse("ok")
-
-
-class OrderApiView(CreateAPIView):
+class OrderApiView(GenericAPIView):
     serializer_class = serializers.TaskSerializer
 
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            contract = get_object_or_404(
+                Contract,
+                contract_id=serializer.data['contract_id']
+            )
 
-class IncomingMessageApiView(APIView):
+            if serializer.data['order'] == 'form':
+                mtData = serializer.data['params'].copy()
+                mtData.pop('fields')
+
+                measurmenttask = MeasurementTask.objects.create(
+                    contract=contract, **mtData)
+
+                for field in serializer.data['params']['fields']:
+                    mtg, create = MeasurementTaskGeneric.objects.get_or_create(
+                        value_type=field.pop('type'), **field)
+                    measurmenttask.fields.add(mtg)
+
+                return HttpResponse('ok')
+            elif serializer.data['order'] == 'medicine':
+                MedicineTaskGeneric.objects.create(
+                    contract=contract,
+                    medsenger_id=serializer.data['params'].pop('id'),
+                    **serializer.data['params']
+                )
+                return HttpResponse('ok')
+            else:
+                raise ValidationError(detail="Invalid order param")
+
+
+class IncomingMessageApiView(GenericAPIView):
     serializer_class = serializers.MessageSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer(data=request.data)
+
         if serializer.is_valid(raise_exception=True):
-            try:
-                contract = Contract.objects.get(
-                    contract_id=serializer.data['contract_id'])
-            except exceptions.ObjectDoesNotExist:
-                raise ValidationError(detail='Contract does not exist')
+            contract = get_object_or_404(
+                Contract,
+                contract_id=serializer.data['contract_id']
+            )
 
             if serializer.data['message']['sender'] == 'patient':
                 return HttpResponse("ok")
+
             date = serializer['message']['date'].value
             message = Message.objects.create(
                 contract=contract,
@@ -220,8 +217,6 @@ class IncomingMessageApiView(APIView):
                         date,
                         "%Y-%m-%d %H:%M:%S").astimezone(timezone.utc)),
             )
-
-            message.save()
 
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(

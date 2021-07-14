@@ -7,6 +7,7 @@ from rest_framework import serializers
 from medsenger_agent.models import (
     MeasurementTask,
     MeasurementTaskGeneric,
+    MedicineTaskGeneric,
     Contract,
 )
 
@@ -41,20 +42,42 @@ class TaskGenericSerializer(serializers.ModelSerializer):
         return result
 
 
+class MedicineGenericSerializer(serializers.ModelSerializer):
+    contract = serializers.ReadOnlyField(
+        source='contract_id', )
+    id = serializers.IntegerField(
+        source='medsenger_id', )
+
+    class Meta:
+        model = MedicineTaskGeneric
+        exclude = ('date', 'medsenger_id')
+
+
 class TaskModelSerializer(serializers.ModelSerializer):
-    contract_id = serializers.ReadOnlyField(
-        source='contract.contract_id', )
+    contract = serializers.ReadOnlyField(
+        source='contract_id', )
     fields = serializers.ListField(
         child=TaskGenericSerializer())
 
     class Meta:
         model = MeasurementTask
-        fields = '__all__'
+        exclude = ('date',)
 
 
 class TaskSerializer(serializers.Serializer):
+    def __init__(self, *args, **kwargs):
+        request = kwargs.get('context', {}).get('request')
+        order = request.data.get('order', '') if request else None
+
+        super().__init__(*args, **kwargs)
+        if order == 'form':
+            self.fields['params'] = TaskModelSerializer()
+        elif order == 'medicine':
+            self.fields['params'] = MedicineGenericSerializer()
+
     api_key = ApiKeyField()
     contract_id = serializers.IntegerField()
+    order = serializers.CharField()
     params = TaskModelSerializer()
 
 
