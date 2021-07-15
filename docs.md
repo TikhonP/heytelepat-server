@@ -24,7 +24,7 @@ No yet
 
 ## Indices
 
-* [Ungrouped](#ungrouped)
+* [MEDSENGER](#medsenger)
 
   * [MEDSENGER Add New Device](#1-medsenger-add-new-device)
   * [MEDSENGER Incoming message](#2-medsenger-incoming-message)
@@ -32,15 +32,18 @@ No yet
   * [MEDSENGER order](#4-medsenger-order)
   * [MEDSENGER remove](#5-medsenger-remove)
   * [MEDSENGER status](#6-medsenger-status)
-  * [SPEAKER init](#7-speaker-init)
-  * [SPEAKER messages](#8-speaker-messages)
-  * [SPEAKER push value](#9-speaker-push-value)
+
+* [SPEAKER](#speaker)
+
+  * [SPEAKER init](#1-speaker-init)
+  * [SPEAKER messages](#2-speaker-messages)
+  * [SPEAKER push value](#3-speaker-push-value)
 
 
 --------
 
 
-## Ungrouped
+## MEDSENGER
 
 
 
@@ -484,7 +487,11 @@ URL: http://127.0.0.1:8000/medsenger/status
 
 
 
-### 7. SPEAKER init
+## SPEAKER
+
+
+
+### 1. SPEAKER init
 
 
 Speaker initialization
@@ -522,7 +529,7 @@ URL: http://127.0.0.1:8000/speakerapi/init/
 
 
 
-### 8. SPEAKER messages
+### 2. SPEAKER messages
 
 
 Get messages list
@@ -583,7 +590,7 @@ URL: http://127.0.0.1:8000/speakerapi/incomingmessage/
 
 
 
-### 9. SPEAKER push value
+### 3. SPEAKER push value
 
 
 Push value with given category is and value
@@ -662,4 +669,4 @@ OK
 
 ---
 [Back to top](#***REMOVED***)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-15 17:13:01 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-15 17:26:20 by [docgen](https://github.com/thedevsaddam/docgen)
