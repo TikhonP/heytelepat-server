@@ -1,8 +1,22 @@
-from speakerapi import serializers
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from medsenger_agent.models import Speaker, Message
-from channels.db import database_sync_to_async
 import json
+import medsenger_api
+
+from django.conf import settings
+
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from channels.db import database_sync_to_async
+
+from medsenger_agent.models import (
+    Speaker,
+    Message,
+    MeasurementTask,
+    MedicineTaskGeneric,
+)
+from speakerapi import serializers
+import medsenger_agent
+
+
+aac = medsenger_api.AgentApiClient(settings.APP_KEY)
 
 
 class WaitForAuthConsumer(AsyncJsonWebsocketConsumer):
@@ -159,3 +173,225 @@ class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
                 "text": event['message'],
                 "id": event['message_id']
             }, ensure_ascii=False))
+
+
+class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
+    serializer = serializers.IncomingMeasurementNotify
+    out_serializer = medsenger_agent.serializers.TaskModelSerializer
+
+    async def connect(self):
+        self.room_group_name = None
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        if self.room_group_name is not None:
+            await self.channel_layer.group_discard(
+                self.room_group_name,
+                self.channel_name
+            )
+
+    async def first_init(self, content, **kwargs):
+        measurement = None
+        try:
+            m = await database_sync_to_async(
+                MeasurementTask.objects.filter)(
+                    contract=kwargs['s'].contract, is_sent=False)
+            m = await database_sync_to_async(
+                m.prefetch_related)('fields')
+            measurement = await database_sync_to_async(
+                m.earliest)('date')
+        except MeasurementTask.DoesNotExist:
+            pass
+
+        if measurement is not None:
+            out_serializer = self.out_serializer(measurement)
+            await self.send(
+                json.dumps(out_serializer.data, ensure_ascii=False))
+
+        self.room_group_name = 'measurement_{}'.format(
+            kwargs['s'].contract.contract_id)
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    @database_sync_to_async
+    def get_measurement(self, content, **kwargs):
+        try:
+            return MeasurementTask.objects.get(id=content['measurement_id'])
+        except MeasurementTask.DoesNotExist:
+            return
+
+    async def is_sent(self, content, **kwargs):
+        measurement = await self.get_measurement(content, **kwargs)
+        if measurement is None:
+            await self.send(json.dumps(["Measurment does not exists"]))
+            await self.close()
+            return
+
+        measurement.is_sent = True
+        await database_sync_to_async(measurement.save)()
+
+    async def is_done(self, content, **kwargs):
+        measurement = await self.get_measurement(content, **kwargs)
+        if measurement is None:
+            await self.send(json.dumps(["Measurment does not exists"]))
+            await self.close()
+            return
+
+        measurement.is_done = True
+        await database_sync_to_async(measurement.save)()
+
+    async def pushvalue(self, content, **kwargs):
+        aac.add_record(
+            kwargs['s'].contract.contract_id,
+            content['category_name'],
+            content['value'],
+        )
+
+    async def receive_json(self, content, **kwargs):
+        serializer = self.serializer(data=content)
+
+        if serializer.is_valid():
+            try:
+                s = await database_sync_to_async(
+                    Speaker.objects.select_related('contract').get)(
+                        token=serializer.data['token'])
+                kwargs['s'] = s
+            except Speaker.DoesNotExist:
+                await self.send("Invalid token")
+                await self.close()
+                return
+
+            if serializer.data['request_type'] == 'init':
+                return await self.first_init(serializer.data, **kwargs)
+            elif serializer.data['request_type'] == 'is_sent':
+                return await self.is_sent(serializer.data, **kwargs)
+            elif serializer.data['request_type'] == 'is_done':
+                return await self.is_done(serializer.data, **kwargs)
+            elif serializer.data['request_type'] == 'pushvalue':
+                return await self.pushvalue(serializer.data, **kwargs)
+            else:
+                await self.send(json.dumps(
+                    {'request_type': ['Invalid request type']},
+                    ensure_ascii=False))
+                await self.close()
+                return
+
+        await self.send(json.dumps(serializer.errors, ensure_ascii=False))
+        await self.close()
+
+    async def receive_mesurements(self, event):
+        await self.send(json.dumps(event['data'], ensure_ascii=False))
+
+
+class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
+    serializer = serializers.IncomingMeasurementNotify
+    out_serializer = medsenger_agent.serializers.MedicineGenericSerializer
+
+    async def connect(self):
+        self.room_group_name = None
+        self.inited = False
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        if self.room_group_name is not None:
+            await self.channel_layer.group_discard(
+                self.room_group_name,
+                self.channel_name
+            )
+
+    async def first_init(self, content, **kwargs):
+        medicine = None
+        try:
+            m = await database_sync_to_async(
+                MedicineTaskGeneric.objects.filter)(
+                    contract=kwargs['s'].contract, is_sent=False)
+            medicine = await database_sync_to_async(
+                m.earliest)('date')
+        except MedicineTaskGeneric.DoesNotExist:
+            pass
+
+        if medicine is not None:
+            out_serializer = self.out_serializer(medicine)
+            await self.send(
+                json.dumps(out_serializer.data, ensure_ascii=False))
+
+        self.room_group_name = 'medicine_{}'.format(
+            kwargs['s'].contract.contract_id)
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        self.inited = True
+
+    @database_sync_to_async
+    def get_medicine(self, content, **kwargs):
+        try:
+            return MedicineTaskGeneric.objects.get(
+                id=content['measurement_id'])
+        except MedicineTaskGeneric.DoesNotExist:
+            return
+
+    async def is_sent(self, content, **kwargs):
+        medicine = await self.get_medicine(content, **kwargs)
+        if medicine is None:
+            await self.send(json.dumps(["Medicine does not exists"]))
+            await self.close()
+            return
+
+        medicine.is_sent = True
+        await database_sync_to_async(medicine.save)()
+
+    async def is_done(self, content, **kwargs):
+        medicine = await self.get_medicine(content, **kwargs)
+        if medicine is None:
+            await self.send(json.dumps(["Measurment does not exists"]))
+            await self.close()
+            return
+
+        medicine.is_done = True
+        await database_sync_to_async(medicine.save)()
+
+    async def pushvalue(self, content, **kwargs):
+        return
+
+    async def receive_json(self, content, **kwargs):
+        serializer = self.serializer(data=content)
+
+        if serializer.is_valid():
+            try:
+                s = await database_sync_to_async(
+                    Speaker.objects.select_related('contract').get)(
+                        token=serializer.data['token'])
+                kwargs['s'] = s
+            except Speaker.DoesNotExist:
+                await self.send("Invalid token")
+                await self.close()
+                return
+
+            if serializer.data['request_type'] == 'init':
+                return await self.first_init(serializer.data, **kwargs)
+            elif self.inited:
+                if serializer.data['request_type'] == 'is_sent':
+                    return await self.is_sent(serializer.data, **kwargs)
+                elif serializer.data['request_type'] == 'is_done':
+                    return await self.is_done(serializer.data, **kwargs)
+                elif serializer.data['request_type'] == 'pushvalue':
+                    return await self.pushvalue(serializer.data, **kwargs)
+                else:
+                    await self.send(json.dumps(
+                        {'request_type': ['Invalid request type']},
+                        ensure_ascii=False))
+                    await self.close()
+                return
+            else:
+                await self.send(json.dumps(["You must init first"]))
+                await self.close()
+                return
+
+        await self.send(json.dumps(serializer.errors, ensure_ascii=False))
+        await self.close()
+
+    async def receive_medicine(self, event):
+        await self.send(json.dumps(event['data'], ensure_ascii=False))

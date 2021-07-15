@@ -35,6 +35,14 @@ class IncomingMessageNotify(serializers.Serializer):
     red_message = serializers.BooleanField(required=False)
 
 
+class IncomingMeasurementNotify(serializers.Serializer):
+    token = serializers.CharField()
+    request_type = serializers.CharField()
+    measurement_id = serializers.IntegerField(required=False)
+    category_name = serializers.CharField(required=False)
+    value = serializers.CharField(required=False)
+
+
 class GetListOfAllCategories(serializers.Serializer):
     token = serializers.CharField()
     names_only = serializers.BooleanField()

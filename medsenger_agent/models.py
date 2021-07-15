@@ -25,6 +25,10 @@ class Speaker(models.Model):
 
         return super(Speaker, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return "Speker ({}) - {}".format(
+            self.id, self.contract)
+
 
 class MeasurementTaskGeneric(models.Model):
     uid = models.CharField(max_length=255)
@@ -34,6 +38,9 @@ class MeasurementTaskGeneric(models.Model):
     min_value = models.FloatField(null=True)
     text = models.CharField(max_length=255)
     value_type = models.CharField(max_length=255)
+
+    def __str__(self):
+        return "Category '{}' ({})".format(self.category, self.id)
 
 
 class MedicineTaskGeneric(models.Model):
@@ -46,6 +53,9 @@ class MedicineTaskGeneric(models.Model):
 
     is_sent = models.BooleanField(default=False)
     is_done = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "Medicine ({}) - {}".format(self.id, self.title)
 
 
 class MeasurementTask(models.Model):
@@ -61,6 +71,9 @@ class MeasurementTask(models.Model):
 
     date = models.DateTimeField(auto_now_add=True, blank=True)
 
+    def __str__(self):
+        return "Measurement ({}) - {}".format(self.id, self.title)
+
 
 class Message(models.Model):
     contract = models.ForeignKey(
@@ -72,3 +85,6 @@ class Message(models.Model):
 
     is_red = models.BooleanField(default=False)
     is_notified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "Message ({}) - {}".format(self.id, self.text)
