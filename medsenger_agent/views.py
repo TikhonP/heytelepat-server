@@ -180,13 +180,34 @@ class OrderApiView(GenericAPIView):
                         value_type=field.pop('type'), **field)
                     measurmenttask.fields.add(mtg)
 
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    'measurement_%s' % contract.contract_id,
+                    {
+                        'type': 'receive_mesurements',
+                        'data': serializers.TaskModelSerializer(
+                            measurmenttask).data
+                    }
+                )
+
                 return HttpResponse('ok')
             elif serializer.data['order'] == 'medicine':
-                MedicineTaskGeneric.objects.create(
+                m = MedicineTaskGeneric.objects.create(
                     contract=contract,
                     medsenger_id=serializer.data['params'].pop('id'),
                     **serializer.data['params']
                 )
+
+                out_serializer = serializers.MedicineGenericSerializer(m)
+                channel_layer = get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    'medicine_%s' % contract.contract_id,
+                    {
+                        'type': 'receive_medicine',
+                        'data': out_serializer.data
+                    }
+                )
+
                 return HttpResponse('ok')
             else:
                 raise ValidationError(detail="Invalid order param")

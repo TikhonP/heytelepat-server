@@ -37,8 +37,9 @@ class TaskGenericSerializer(serializers.ModelSerializer):
 
     def get_fields(self):
         result = super().get_fields()
-        type_ = result.pop('value_type')
-        result['type'] = type_
+        if 'request' in self.context:
+            type_ = result.pop('value_type')
+            result['type'] = type_
         return result
 
 
@@ -47,17 +48,19 @@ class MedicineGenericSerializer(serializers.ModelSerializer):
         source='contract_id', )
     id = serializers.IntegerField(
         source='medsenger_id', )
+    # date = serializers.ReadOnlyField()
+    # medsenger_id = serializers.ReadOnlyField()
 
     class Meta:
         model = MedicineTaskGeneric
+        # fields = '__all__'
         exclude = ('date', 'medsenger_id')
 
 
 class TaskModelSerializer(serializers.ModelSerializer):
     contract = serializers.ReadOnlyField(
         source='contract_id', )
-    fields = serializers.ListField(
-        child=TaskGenericSerializer())
+    fields = TaskGenericSerializer(many=True)
 
     class Meta:
         model = MeasurementTask
