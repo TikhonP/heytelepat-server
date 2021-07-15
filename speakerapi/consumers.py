@@ -13,7 +13,7 @@ from medsenger_agent.models import (
     MedicineTaskGeneric,
 )
 from speakerapi import serializers
-import medsenger_agent
+from medsenger_agent import serializers as ma_serializers
 
 
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
@@ -177,7 +177,7 @@ class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
 
 class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
     serializer = serializers.IncomingMeasurementNotify
-    out_serializer = medsenger_agent.serializers.TaskModelSerializer
+    out_serializer = ma_serializers.TaskModelSerializer
 
     async def connect(self):
         self.room_group_name = None
@@ -287,7 +287,7 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
 
 class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
     serializer = serializers.IncomingMeasurementNotify
-    out_serializer = medsenger_agent.serializers.MedicineGenericSerializer
+    out_serializer = ma_serializers.MedicineGenericSerializer
 
     async def connect(self):
         self.room_group_name = None
