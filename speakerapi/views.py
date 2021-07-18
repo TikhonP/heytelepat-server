@@ -3,6 +3,7 @@ import medsenger_api
 from django.http import HttpResponse
 from django.core import exceptions
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
@@ -11,7 +12,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from speakerapi import serializers
-from medsenger_agent.models import Speaker, Message
+from medsenger_agent.models import Speaker, Message, MeasurementTask
+from medsenger_agent.serializers import TaskModelSerializer
 
 
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
@@ -39,31 +41,6 @@ class SpeakerDeleteApiView(APIView):
             raise ValidationError(detail='Invalid Token')
         s.delete()
         return HttpResponse('OK')
-
-
-"""
-class TaskApiView(ListAPIView):
-    serializer_class = serializers.TaskSerializer
-
-    def get_queryset(self):
-        token = self.request.data.get('token', '')
-        try:
-            s = Speaker.objects.get(token=token)
-            queryset = Task.objects.filter(contract=s.contract)
-            return queryset
-        except exceptions.ObjectDoesNotExist:
-            raise ValidationError(detail='Invalid Token')
-
-    def patch(self, request):
-        task_id = self.request.data.get('task_id', '')
-        try:
-            task = Task.objects.get(pk=int(task_id))
-            task.is_done = True
-            task.save()
-            return HttpResponse("ok")
-        except exceptions.ObjectDoesNotExist:
-            raise ValidationError(detail='Invalid ID')
-"""
 
 
 class SendMessageApiView(APIView):
@@ -161,3 +138,49 @@ class GetListOfAllCategories(APIView):
                 data = [i["name"] for i in data]
 
             return Response(data)
+
+
+class MeasurementListAPIView(GenericAPIView):
+    queryset = MeasurementTask.objects.all()
+    serializer_class = serializers.IncomingMeasurementNotify
+
+    def get(self, request):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            try:
+                self.s = Speaker.objects.get(token=serializer.data['token'])
+            except Speaker.DoesNotExist:
+                raise ValidationError(detail='Invalid Token')
+
+            out_serializer = TaskModelSerializer(
+                self.get_queryset(), many=True)
+            return Response(out_serializer.data)
+
+    def patch(self, request):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            try:
+                self.s = Speaker.objects.get(token=serializer.data['token'])
+            except Speaker.DoesNotExist:
+                raise ValidationError(detail='Invalid Token')
+            if 'measurement_id' not in serializer.data:
+                raise ValidationError(detail='Measurement_id missed')
+
+            measurement = get_object_or_404(
+                self.get_queryset(),
+                id=serializer.data['measurement_id'])
+            if serializer.data['request_type'] == 'is_sent':
+                measurement.is_sent = True
+                measurement.save()
+                return Response(TaskModelSerializer(measurement).data)
+            elif serializer.data['request_type'] == 'is_done':
+                measurement.is_done = True
+                measurement.save()
+                return Response(TaskModelSerializer(measurement).data)
+            else:
+                raise ValidationError(detail='Invalid request_type')
+
+    def get_queryset(self):
+        return self.queryset.filter(contract=self.s.contract, is_done=False)
