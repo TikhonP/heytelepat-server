@@ -36,8 +36,9 @@ No yet
 * [SPEAKER](#speaker)
 
   * [SPEAKER init](#1-speaker-init)
-  * [SPEAKER messages](#2-speaker-messages)
-  * [SPEAKER push value](#3-speaker-push-value)
+  * [SPEAKER measurements list and patch](#2-speaker-measurements-list-and-patch)
+  * [SPEAKER messages](#3-speaker-messages)
+  * [SPEAKER push value](#4-speaker-push-value)
 
 
 --------
@@ -529,7 +530,148 @@ URL: http://127.0.0.1:8000/speakerapi/init/
 
 
 
-### 2. SPEAKER messages
+### 2. SPEAKER measurements list and patch
+
+
+Get list of all measurements and push status.
+If `request_type` set to `is_sent`, then model's `.is_sent` attribute will be `True`.
+If `request_type` set to `is_done`, then model's `.is_done` attribute will be `True`.
+Returns model instance.
+
+
+***Endpoint:***
+
+```bash
+Method: GET
+Type: 
+URL: http://127.0.0.1:8000/speakerapi/measurements/
+```
+
+
+
+***More example Requests/Responses:***
+
+
+##### I. Example Request: SPEAKER measurements list and patch
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "request_type": "get"
+}
+```
+
+
+
+##### I. Example Response: SPEAKER measurements list and patch
+```js
+[
+    {
+        "id": 14,
+        "contract": 3808,
+        "fields": [
+            {
+                "id": 1,
+                "uid": "24c2258b-d338-4184-a114-5cae3721bb16",
+                "category": "glukose",
+                "description": "ммоль/л",
+                "max_value": null,
+                "min_value": null,
+                "text": "Глюкоза",
+                "value_type": "float"
+            },
+            {
+                "id": 2,
+                "uid": "93722301-d652-4903-8404-e56da4d31ad7",
+                "category": "information",
+                "description": null,
+                "max_value": null,
+                "min_value": null,
+                "text": "Комментарий",
+                "value_type": "textarea"
+            }
+        ],
+        "title": "Глюкоза",
+        "doctor_description": "Запрашивает у пациента уровень глюкозы в крови.",
+        "patient_description": "Пожалуйста, измерьте уровень сахара в крови до еды с помощью глюкометра и укажите его в поле ниже.",
+        "thanks_text": null,
+        "is_sent": true,
+        "is_done": true
+    }
+]
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+##### II. Example Request: SPEAKER measurements list and patch
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "request_type": "is_done",
+    "measurement_id": 14
+}
+```
+
+
+
+##### II. Example Response: SPEAKER measurements list and patch
+```js
+{
+    "id": 14,
+    "contract": 3808,
+    "fields": [
+        {
+            "id": 1,
+            "uid": "24c2258b-d338-4184-a114-5cae3721bb16",
+            "category": "glukose",
+            "description": "ммоль/л",
+            "max_value": null,
+            "min_value": null,
+            "text": "Глюкоза",
+            "value_type": "float"
+        },
+        {
+            "id": 2,
+            "uid": "93722301-d652-4903-8404-e56da4d31ad7",
+            "category": "information",
+            "description": null,
+            "max_value": null,
+            "min_value": null,
+            "text": "Комментарий",
+            "value_type": "textarea"
+        }
+    ],
+    "title": "Глюкоза",
+    "doctor_description": "Запрашивает у пациента уровень глюкозы в крови.",
+    "patient_description": "Пожалуйста, измерьте уровень сахара в крови до еды с помощью глюкометра и укажите его в поле ниже.",
+    "thanks_text": null,
+    "is_sent": true,
+    "is_done": true
+}
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+### 3. SPEAKER messages
 
 
 Get messages list
@@ -590,7 +732,7 @@ URL: http://127.0.0.1:8000/speakerapi/incomingmessage/
 
 
 
-### 3. SPEAKER push value
+### 4. SPEAKER push value
 
 
 Push value with given category is and value
@@ -669,4 +811,4 @@ OK
 
 ---
 [Back to top](#***REMOVED***)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-15 17:26:20 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-16 16:55:07 by [docgen](https://github.com/thedevsaddam/docgen)
