@@ -35,10 +35,13 @@ No yet
 
 * [SPEAKER](#speaker)
 
-  * [SPEAKER init](#1-speaker-init)
-  * [SPEAKER measurements list and patch](#2-speaker-measurements-list-and-patch)
-  * [SPEAKER messages](#3-speaker-messages)
-  * [SPEAKER push value](#4-speaker-push-value)
+  * [SPEAKER get list of all categories](#1-speaker-get-list-of-all-categories)
+  * [SPEAKER init](#2-speaker-init)
+  * [SPEAKER measurements list and patch](#3-speaker-measurements-list-and-patch)
+  * [SPEAKER messages](#4-speaker-messages)
+  * [SPEAKER push value](#5-speaker-push-value)
+  * [SPEAKER remove](#6-speaker-remove)
+  * [SPEAKER send message](#7-speaker-send-message)
 
 
 --------
@@ -492,7 +495,190 @@ URL: http://127.0.0.1:8000/medsenger/status
 
 
 
-### 1. SPEAKER init
+### 1. SPEAKER get list of all categories
+
+
+
+***Endpoint:***
+
+```bash
+Method: GET
+Type: RAW
+URL: http://127.0.0.1:8000/speakerapi/getlistcategories/
+```
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "names_only": false
+}
+```
+
+
+
+***More example Requests/Responses:***
+
+
+##### I. Example Request: SPEAKER get list of all categories
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "names_only": false
+}
+```
+
+
+
+##### I. Example Response: SPEAKER get list of all categories
+```js
+[
+    {
+        "id": 27,
+        "name": "medicines",
+        "description": "Назначенные лекарства",
+        "unit": "",
+        "type": "string",
+        "default_representation": "values",
+        "is_legacy": true,
+        "subcategory": null
+    },
+    {
+        "id": 3,
+        "name": "diastolic_pressure",
+        "description": "Диастолическое (нижнее) артериальное давление",
+        "unit": "мм рт. ст.",
+        "type": "integer",
+        "default_representation": "scatter",
+        "is_legacy": false,
+        "subcategory": "Измерения"
+    },
+    {
+        "id": 1,
+        "name": "pulse",
+        "description": "Пульс в покое",
+        "unit": "удары в минуту",
+        "type": "integer",
+        "default_representation": "scatter",
+        "is_legacy": false,
+        "subcategory": "Измерения"
+    },
+    {
+        "id": 4,
+        "name": "weight",
+        "description": "Вес",
+        "unit": "кг",
+        "type": "float",
+        "default_representation": "values",
+        "is_legacy": false,
+        "subcategory": "Измерения"
+    },
+    {
+        "id": 2,
+        "name": "systolic_pressure",
+        "description": "Систолическое (верхнее) артериальное давление в покое",
+        "unit": "мм рт. ст.",
+        "type": "integer",
+        "default_representation": "scatter",
+        "is_legacy": false,
+        "subcategory": "Измерения"
+    },
+    {
+        "id": 25,
+        "name": "temperature",
+        "description": "Температура",
+        "unit": "град Цельсия",
+        "type": "float",
+        "default_representation": "values",
+        "is_legacy": false,
+        "subcategory": "Измерения"
+    },
+    {
+        "id": 24,
+        "name": "glukose",
+        "description": "Глюкоза",
+        "unit": "моль/литр",
+        "type": "float",
+        "default_representation": "values",
+        "is_legacy": false,
+        "subcategory": "Измерения"
+    },
+    {
+        "id": 29,
+        "name": "medicine",
+        "description": "Принятое лекарство",
+        "unit": "",
+        "type": "string",
+        "default_representation": "values",
+        "is_legacy": false,
+        "subcategory": "Общее"
+    },
+    {
+        "id": 35,
+        "name": "information",
+        "description": "Общая информация",
+        "unit": "",
+        "type": "string",
+        "default_representation": "values",
+        "is_legacy": false,
+        "subcategory": "Общее"
+    }
+]
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+##### II. Example Request: SPEAKER get list of all categories
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "names_only": true
+}
+```
+
+
+
+##### II. Example Response: SPEAKER get list of all categories
+```js
+[
+    "medicines",
+    "diastolic_pressure",
+    "pulse",
+    "weight",
+    "systolic_pressure",
+    "temperature",
+    "glukose",
+    "medicine",
+    "information"
+]
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+### 2. SPEAKER init
 
 
 Speaker initialization
@@ -530,7 +716,7 @@ URL: http://127.0.0.1:8000/speakerapi/init/
 
 
 
-### 2. SPEAKER measurements list and patch
+### 3. SPEAKER measurements list and patch
 
 
 Get list of all measurements and push status.
@@ -671,7 +857,7 @@ URL: http://127.0.0.1:8000/speakerapi/measurements/
 
 
 
-### 3. SPEAKER messages
+### 4. SPEAKER messages
 
 
 Get messages list
@@ -732,7 +918,7 @@ URL: http://127.0.0.1:8000/speakerapi/incomingmessage/
 
 
 
-### 4. SPEAKER push value
+### 5. SPEAKER push value
 
 
 Push value with given category is and value
@@ -789,7 +975,121 @@ URL: http://127.0.0.1:8000/speakerapi/pushvalue/
 
 ##### I. Example Response: SPEAKER push value
 ```js
-OK
+[
+    "ok"
+]
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+### 6. SPEAKER remove
+
+
+
+***Endpoint:***
+
+```bash
+Method: DELETE
+Type: RAW
+URL: http://127.0.0.1:8000/speakerapi/remove/
+```
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}"
+}
+```
+
+
+
+***More example Requests/Responses:***
+
+
+##### I. Example Request: SPEAKER remove
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}"
+}
+```
+
+
+
+##### I. Example Response: SPEAKER remove
+```js
+[
+    "ok"
+]
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+### 7. SPEAKER send message
+
+
+
+***Endpoint:***
+
+```bash
+Method: POST
+Type: RAW
+URL: http://127.0.0.1:8000/speakerapi/sendmessage/
+```
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "message": "sample message"
+}
+```
+
+
+
+***More example Requests/Responses:***
+
+
+##### I. Example Request: SPEAKER send message
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "message": "sample message"
+}
+```
+
+
+
+##### I. Example Response: SPEAKER send message
+```js
+[
+    "ok"
+]
 ```
 
 
@@ -811,4 +1111,4 @@ OK
 
 ---
 [Back to top](#heytelepat)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-16 16:55:07 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-19 13:58:21 by [docgen](https://github.com/thedevsaddam/docgen)
