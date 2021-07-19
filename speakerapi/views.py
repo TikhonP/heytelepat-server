@@ -1,6 +1,5 @@
 import medsenger_api
 
-from django.http import HttpResponse
 from django.core import exceptions
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -40,7 +39,7 @@ class SpeakerDeleteApiView(APIView):
         except exceptions.ObjectDoesNotExist:
             raise ValidationError(detail='Invalid Token')
         s.delete()
-        return HttpResponse('OK')
+        return Response(['ok'])
 
 
 class SendMessageApiView(APIView):
@@ -60,7 +59,7 @@ class SendMessageApiView(APIView):
             message = "Сообщение от пациента: " + message
             aac.send_message(
                 s.contract.contract_id, message, need_answer=True)
-            return HttpResponse('OK')
+            return Response(['ok'])
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -91,7 +90,7 @@ class SendValueApiView(GenericAPIView):
                     data
                 )
 
-            return HttpResponse('OK')
+            return Response(['ok'])
 
 
 class IncomingMessageNotifyApiView(GenericAPIView):
