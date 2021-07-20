@@ -514,7 +514,7 @@ URL: http://127.0.0.1:8000/speakerapi/getlistcategories/
 ```js        
 {
     "token": "{{token}}",
-    "names_only": false
+    "names_only": true
 }
 ```
 
@@ -729,8 +729,19 @@ Returns model instance.
 
 ```bash
 Method: GET
-Type: 
+Type: RAW
 URL: http://127.0.0.1:8000/speakerapi/measurements/
+```
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "request_type": "get"
+}
 ```
 
 
@@ -747,66 +758,6 @@ URL: http://127.0.0.1:8000/speakerapi/measurements/
 ```js        
 {
     "token": "{{token}}",
-    "request_type": "get"
-}
-```
-
-
-
-##### I. Example Response: SPEAKER measurements list and patch
-```js
-[
-    {
-        "id": 14,
-        "contract": 3808,
-        "fields": [
-            {
-                "id": 1,
-                "uid": "24c2258b-d338-4184-a114-5cae3721bb16",
-                "category": "glukose",
-                "description": "ммоль/л",
-                "max_value": null,
-                "min_value": null,
-                "text": "Глюкоза",
-                "value_type": "float"
-            },
-            {
-                "id": 2,
-                "uid": "93722301-d652-4903-8404-e56da4d31ad7",
-                "category": "information",
-                "description": null,
-                "max_value": null,
-                "min_value": null,
-                "text": "Комментарий",
-                "value_type": "textarea"
-            }
-        ],
-        "title": "Глюкоза",
-        "doctor_description": "Запрашивает у пациента уровень глюкозы в крови.",
-        "patient_description": "Пожалуйста, измерьте уровень сахара в крови до еды с помощью глюкометра и укажите его в поле ниже.",
-        "thanks_text": null,
-        "is_sent": true,
-        "is_done": true
-    }
-]
-```
-
-
-***Status Code:*** 200
-
-<br>
-
-
-
-##### II. Example Request: SPEAKER measurements list and patch
-
-
-
-***Body:***
-
-```js        
-{
-    "token": "{{token}}",
     "request_type": "is_done",
     "measurement_id": 14
 }
@@ -814,7 +765,7 @@ URL: http://127.0.0.1:8000/speakerapi/measurements/
 
 
 
-##### II. Example Response: SPEAKER measurements list and patch
+##### I. Example Response: SPEAKER measurements list and patch
 ```js
 {
     "id": 14,
@@ -848,6 +799,69 @@ URL: http://127.0.0.1:8000/speakerapi/measurements/
     "is_sent": true,
     "is_done": true
 }
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+##### II. Example Request: SPEAKER measurements list and patch
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "request_type": "get"
+}
+```
+
+
+
+##### II. Example Response: SPEAKER measurements list and patch
+```js
+[
+    {
+        "id": 17,
+        "contract": 3808,
+        "fields": [
+            {
+                "id": 1,
+                "uid": "24c2258b-d338-4184-a114-5cae3721bb16",
+                "category": "glukose",
+                "description": "ммоль/л",
+                "max_value": null,
+                "min_value": null,
+                "text": "Глюкоза",
+                "value_type": "float",
+                "prefix": null
+            },
+            {
+                "id": 6,
+                "uid": "93722301-d652-4903-8404-e56da4d31ad7",
+                "category": "information",
+                "description": null,
+                "max_value": null,
+                "min_value": null,
+                "text": "Комментарий",
+                "value_type": "textarea",
+                "prefix": "Комментарий пациента -"
+            }
+        ],
+        "title": "Глюкоза",
+        "doctor_description": "Запрашивает у пациента уровень глюкозы в крови.",
+        "patient_description": "Пожалуйста, измерьте уровень сахара в крови до еды с помощью глюкометра и укажите его в поле ниже.",
+        "thanks_text": null,
+        "custom_text": null,
+        "is_sent": false,
+        "is_done": false
+    }
+]
 ```
 
 
@@ -1111,4 +1125,4 @@ URL: http://127.0.0.1:8000/speakerapi/sendmessage/
 
 ---
 [Back to top](#heytelepat)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-19 13:58:21 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-20 14:50:08 by [docgen](https://github.com/thedevsaddam/docgen)
