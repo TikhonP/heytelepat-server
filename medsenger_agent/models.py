@@ -38,6 +38,7 @@ class MeasurementTaskGeneric(models.Model):
     min_value = models.FloatField(null=True)
     text = models.CharField(max_length=255)
     value_type = models.CharField(max_length=255)
+    prefix = models.CharField(max_length=255, null=True, default=None)
 
     def __str__(self):
         return "Category '{}' ({})".format(self.category, self.id)
@@ -64,6 +65,7 @@ class MeasurementTask(models.Model):
     doctor_description = models.TextField(null=True, default=None)
     patient_description = models.TextField(null=True, default=None)
     thanks_text = models.TextField(null=True, default=None)
+    custom_text = models.TextField(null=True, default=None)
     fields = models.ManyToManyField(MeasurementTaskGeneric)
 
     is_sent = models.BooleanField(default=False)
