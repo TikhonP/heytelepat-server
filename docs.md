@@ -5,7 +5,7 @@
 Interact with heytelepat-agent
 
 # Overview
-Medsenger agent is for connectiong to medsenger api and Speaker api is for connecting from speaker
+Medsenger agent is for connection to medsenger api and Speaker api is for connecting from speaker
 
 # Authentication
 api_key/token
@@ -35,13 +35,15 @@ No yet
 
 * [SPEAKER](#speaker)
 
-  * [SPEAKER get list of all categories](#1-speaker-get-list-of-all-categories)
-  * [SPEAKER init](#2-speaker-init)
-  * [SPEAKER measurements list and patch](#3-speaker-measurements-list-and-patch)
-  * [SPEAKER messages](#4-speaker-messages)
-  * [SPEAKER push value](#5-speaker-push-value)
-  * [SPEAKER remove](#6-speaker-remove)
-  * [SPEAKER send message](#7-speaker-send-message)
+  * [SPEAKER commit medicine](#1-speaker-commit-medicine)
+  * [SPEAKER get list of all categories](#2-speaker-get-list-of-all-categories)
+  * [SPEAKER init](#3-speaker-init)
+  * [SPEAKER measurements list and patch](#4-speaker-measurements-list-and-patch)
+  * [SPEAKER medicines list](#5-speaker-medicines-list)
+  * [SPEAKER messages](#6-speaker-messages)
+  * [SPEAKER push value](#7-speaker-push-value)
+  * [SPEAKER remove](#8-speaker-remove)
+  * [SPEAKER send message](#9-speaker-send-message)
 
 
 --------
@@ -495,7 +497,64 @@ URL: http://127.0.0.1:8000/medsenger/status
 
 
 
-### 1. SPEAKER get list of all categories
+### 1. SPEAKER commit medicine
+
+
+
+***Endpoint:***
+
+```bash
+Method: POST
+Type: RAW
+URL: http://127.0.0.1:8000/speakerapi/medicine/commit/
+```
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "medicine": "Бубарин"
+}
+```
+
+
+
+***More example Requests/Responses:***
+
+
+##### I. Example Request: SPEAKER commit medicine
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "medicine": "Бубарин"
+}
+```
+
+
+
+##### I. Example Response: SPEAKER commit medicine
+```js
+[
+    "ok"
+]
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+### 2. SPEAKER get list of all categories
 
 
 
@@ -678,7 +737,7 @@ URL: http://127.0.0.1:8000/speakerapi/getlistcategories/
 
 
 
-### 2. SPEAKER init
+### 3. SPEAKER init
 
 
 Speaker initialization
@@ -716,7 +775,7 @@ URL: http://127.0.0.1:8000/speakerapi/init/
 
 
 
-### 3. SPEAKER measurements list and patch
+### 4. SPEAKER measurements list and patch
 
 
 Get list of all measurements and push status.
@@ -871,7 +930,106 @@ URL: http://127.0.0.1:8000/speakerapi/measurements/
 
 
 
-### 4. SPEAKER messages
+### 5. SPEAKER medicines list
+
+
+
+***Endpoint:***
+
+```bash
+Method: GET
+Type: RAW
+URL: http://127.0.0.1:8000/speakerapi/medicine/
+```
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "request_type": "init"
+}
+```
+
+
+
+***More example Requests/Responses:***
+
+
+##### I. Example Request: SPEAKER medicines list
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "request_type": "init"
+}
+```
+
+
+
+##### I. Example Response: SPEAKER medicines list
+```js
+[
+    {
+        "id": 13,
+        "contract": 3808,
+        "title": "ghj",
+        "rules": "asd",
+        "is_sent": false,
+        "is_done": false
+    }
+]
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+##### II. Example Request: SPEAKER medicines list
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "request_type": "is_done",
+    "measurement_id": 13
+}
+```
+
+
+
+##### II. Example Response: SPEAKER medicines list
+```js
+{
+    "id": 13,
+    "contract": 3808,
+    "title": "ghj",
+    "rules": "asd",
+    "is_sent": false,
+    "is_done": true
+}
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+### 6. SPEAKER messages
 
 
 Get messages list
@@ -932,7 +1090,7 @@ URL: http://127.0.0.1:8000/speakerapi/incomingmessage/
 
 
 
-### 5. SPEAKER push value
+### 7. SPEAKER push value
 
 
 Push value with given category is and value
@@ -1001,7 +1159,7 @@ URL: http://127.0.0.1:8000/speakerapi/pushvalue/
 
 
 
-### 6. SPEAKER remove
+### 8. SPEAKER remove
 
 
 
@@ -1056,7 +1214,7 @@ URL: http://127.0.0.1:8000/speakerapi/remove/
 
 
 
-### 7. SPEAKER send message
+### 9. SPEAKER send message
 
 
 
@@ -1125,4 +1283,4 @@ URL: http://127.0.0.1:8000/speakerapi/sendmessage/
 
 ---
 [Back to top](#heytelepat)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-20 14:50:08 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-21 17:31:00 by [docgen](https://github.com/thedevsaddam/docgen)

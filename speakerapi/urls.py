@@ -9,4 +9,6 @@ urlpatterns = [
     path('incomingmessage/', views.IncomingMessageNotifyApiView.as_view()),
     path('getlistcategories/', views.GetListOfAllCategories.as_view()),
     path('measurements/', views.MeasurementListAPIView.as_view()),
+    path('medicine/commit/', views.CommitMedicineApiView.as_view()),
+    path('medicine/', views.MedicineListAPIView.as_view()),
 ]
