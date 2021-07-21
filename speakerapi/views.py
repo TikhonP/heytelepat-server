@@ -11,15 +11,15 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from speakerapi import serializers
-from medsenger_agent.models import Speaker, Message, MeasurementTask
-from medsenger_agent.serializers import TaskModelSerializer
+from medsenger_agent.models import Speaker, Message, MeasurementTask, MedicineTaskGeneric
+from medsenger_agent.serializers import TaskModelSerializer, MedicineGenericSerializer
 
 
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
 
 
 class SpeakerInitApiView(APIView):
-    def post(self, request, format=None):
+    def post(self, request):
         speaker = Speaker.objects.create()
         speaker.save()
 
@@ -32,7 +32,7 @@ class SpeakerInitApiView(APIView):
 
 
 class SpeakerDeleteApiView(APIView):
-    def delete(self, request, format=None):
+    def delete(self, request):
         token = self.request.data.get('token', '')
         try:
             s = Speaker.objects.get(token=token)
@@ -89,6 +89,28 @@ class SendValueApiView(GenericAPIView):
                     s.contract.contract_id,
                     data
                 )
+
+            return Response(['ok'])
+
+
+class CommitMedicineApiView(GenericAPIView):
+    serializer_class = serializers.CommitMedicineSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            try:
+                s = Speaker.objects.get(
+                    token=serializer.data['token'])
+            except Speaker.DoesNotExist:
+                raise ValidationError(detail='Invalid Token')
+
+            aac.add_record(
+                s.contract.contract_id,
+                'medicine',
+                serializer.data['medicine']
+            )
 
             return Response(['ok'])
 
@@ -178,6 +200,53 @@ class MeasurementListAPIView(GenericAPIView):
                 measurement.is_done = True
                 measurement.save()
                 return Response(TaskModelSerializer(measurement).data)
+            else:
+                raise ValidationError(detail='Invalid request_type')
+
+    def get_queryset(self):
+        return self.queryset.filter(contract=self.s.contract, is_done=False)
+
+
+class MedicineListAPIView(GenericAPIView):
+    queryset = MedicineTaskGeneric.objects.all()
+    serializer_class = serializers.IncomingMeasurementNotify
+
+    def get(self, request):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            try:
+                self.s = Speaker.objects.get(token=serializer.data['token'])
+            except Speaker.DoesNotExist:
+                raise ValidationError(detail='Invalid Token')
+
+            out_serializer = MedicineGenericSerializer(
+                self.get_queryset(), many=True)
+            return Response(out_serializer.data)
+
+    def patch(self, request):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            try:
+                self.s = Speaker.objects.get(token=serializer.data['token'])
+            except Speaker.DoesNotExist:
+                raise ValidationError(detail='Invalid Token')
+            if 'measurement_id' not in serializer.data:
+                raise ValidationError(detail='Measurement_id missed')
+
+            medicine = get_object_or_404(
+                self.get_queryset(),
+                medsenger_id=serializer.data['measurement_id'])
+
+            if serializer.data['request_type'] == 'is_sent':
+                medicine.is_sent = True
+                medicine.save()
+                return Response(MedicineGenericSerializer(medicine).data)
+            elif serializer.data['request_type'] == 'is_done':
+                medicine.is_done = True
+                medicine.save()
+                return Response(MedicineGenericSerializer(medicine).data)
             else:
                 raise ValidationError(detail='Invalid request_type')
 

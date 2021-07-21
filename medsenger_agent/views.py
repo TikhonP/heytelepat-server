@@ -185,7 +185,7 @@ class OrderApiView(GenericAPIView):
                 async_to_sync(channel_layer.group_send)(
                     'measurement_%s' % contract.contract_id,
                     {
-                        'type': 'receive_mesurements',
+                        'type': 'receive_measurements',
                         'data': serializers.TaskModelSerializer(
                             measurmenttask).data
                     }

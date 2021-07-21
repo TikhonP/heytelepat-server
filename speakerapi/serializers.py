@@ -24,6 +24,11 @@ class SendValueSerializer(serializers.Serializer):
     values = serializers.ListField(child=DataSendValuesSerializer())
 
 
+class CommitMedicineSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    medicine = serializers.CharField()
+
+
 class CheckAuthSerializer(serializers.Serializer):
     token = serializers.CharField()
 

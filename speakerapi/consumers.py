@@ -225,7 +225,7 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
     async def is_sent(self, content, **kwargs):
         measurement = await self.get_measurement(content, **kwargs)
         if measurement is None:
-            await self.send(json.dumps(["Measurment does not exists"]))
+            await self.send(json.dumps(["Measurement does not exists"]))
             await self.close()
             return
 
@@ -235,14 +235,14 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
     async def is_done(self, content, **kwargs):
         measurement = await self.get_measurement(content, **kwargs)
         if measurement is None:
-            await self.send(json.dumps(["Measurment does not exists"]))
+            await self.send(json.dumps(["Measurement does not exists"]))
             await self.close()
             return
 
         measurement.is_done = True
         await database_sync_to_async(measurement.save)()
 
-    async def pushvalue(self, content, **kwargs):
+    async def push_value(self, content, **kwargs):
         aac.add_record(
             kwargs['s'].contract.contract_id,
             content['category_name'],
@@ -270,7 +270,7 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
             elif serializer.data['request_type'] == 'is_done':
                 return await self.is_done(serializer.data, **kwargs)
             elif serializer.data['request_type'] == 'pushvalue':
-                return await self.pushvalue(serializer.data, **kwargs)
+                return await self.push_value(serializer.data, **kwargs)
             else:
                 await self.send(json.dumps(
                     {'request_type': ['Invalid request type']},
@@ -281,7 +281,7 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
         await self.send(json.dumps(serializer.errors, ensure_ascii=False))
         await self.close()
 
-    async def receive_mesurements(self, event):
+    async def receive_measurements(self, event):
         await self.send(json.dumps(event['data'], ensure_ascii=False))
 
 
@@ -346,15 +346,19 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
     async def is_done(self, content, **kwargs):
         medicine = await self.get_medicine(content, **kwargs)
         if medicine is None:
-            await self.send(json.dumps(["Measurment does not exists"]))
+            await self.send(json.dumps(["Measurement does not exists"]))
             await self.close()
             return
 
         medicine.is_done = True
         await database_sync_to_async(medicine.save)()
 
-    async def pushvalue(self, content, **kwargs):
-        return
+    async def push_value(self, content, **kwargs):
+        aac.add_record(
+            kwargs['s'].contract.contract_id,
+            'medicine',
+            content['value']
+        )
 
     async def receive_json(self, content, **kwargs):
         serializer = self.serializer(data=content)
@@ -378,7 +382,7 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
                 elif serializer.data['request_type'] == 'is_done':
                     return await self.is_done(serializer.data, **kwargs)
                 elif serializer.data['request_type'] == 'pushvalue':
-                    return await self.pushvalue(serializer.data, **kwargs)
+                    return await self.push_value(serializer.data, **kwargs)
                 else:
                     await self.send(json.dumps(
                         {'request_type': ['Invalid request type']},
