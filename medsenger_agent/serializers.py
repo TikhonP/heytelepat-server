@@ -44,16 +44,19 @@ class TaskGenericSerializer(serializers.ModelSerializer):
 
 
 class MedicineGenericSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        request = kwargs.get('context', {}).get('request')
+
+        super().__init__(*args, **kwargs)
+        if request is not None:
+            self.fields['id'] = serializers.IntegerField(
+                source='medsenger_id', )
+
     contract = serializers.ReadOnlyField(
         source='contract_id', )
-    id = serializers.IntegerField(
-        source='medsenger_id', )
-    # date = serializers.ReadOnlyField()
-    # medsenger_id = serializers.ReadOnlyField()
 
     class Meta:
         model = MedicineTaskGeneric
-        # fields = '__all__'
         exclude = ('date', 'medsenger_id')
 
 
@@ -74,9 +77,9 @@ class TaskSerializer(serializers.Serializer):
 
         super().__init__(*args, **kwargs)
         if order == 'form':
-            self.fields['params'] = TaskModelSerializer()
+            self.fields['params'] = TaskModelSerializer(*args, **kwargs)
         elif order == 'medicine':
-            self.fields['params'] = MedicineGenericSerializer()
+            self.fields['params'] = MedicineGenericSerializer(*args, **kwargs)
 
     api_key = ApiKeyField()
     contract_id = serializers.IntegerField()
