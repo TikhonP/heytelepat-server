@@ -329,7 +329,7 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
     def get_medicine(self, content, **kwargs):
         try:
             return MedicineTaskGeneric.objects.get(
-                id=content['measurement_id'])
+                medsenger_id=content['measurement_id'])
         except MedicineTaskGeneric.DoesNotExist:
             return
 
