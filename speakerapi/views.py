@@ -237,7 +237,7 @@ class MedicineListAPIView(GenericAPIView):
 
             medicine = get_object_or_404(
                 self.get_queryset(),
-                medsenger_id=serializer.data['measurement_id'])
+                id=serializer.data['measurement_id'])
 
             if serializer.data['request_type'] == 'is_sent':
                 medicine.is_sent = True

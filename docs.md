@@ -375,6 +375,49 @@ ok
 
 
 
+##### II. Example Request: MEDSENGER order
+
+
+
+***Body:***
+
+```js        
+{
+    "api_key": "{{api_key}}",
+    "contract_id": 3808,
+    "sender_id": 27,
+    "order": "medicine",
+    "params": {
+        "id": 79,
+        "contract_id": 3808,
+        "patient_id": 3970,
+        "title": "Бубарин",
+        "rules": "По одной бубине",
+        "timetable": {"mode": "daily", "points": [{"hour": 18, "minute": 25}]},
+        "is_template": false,
+        "template_id": null,
+        "warning_days": 0,
+        "sent": 7,
+        "done": 0
+    }
+}
+
+```
+
+
+
+##### II. Example Response: MEDSENGER order
+```js
+ok
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
 ### 5. MEDSENGER remove
 
 
@@ -1283,4 +1326,4 @@ URL: http://127.0.0.1:8000/speakerapi/sendmessage/
 
 ---
 [Back to top](#heytelepat)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-21 17:31:00 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-21 18:39:25 by [docgen](https://github.com/thedevsaddam/docgen)
