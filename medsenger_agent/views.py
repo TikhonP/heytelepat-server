@@ -27,6 +27,7 @@ from medsenger_agent.models import (
     MedicineTaskGeneric,
 )
 
+from speakerapi.serializers import MessageSerializer
 
 APP_KEY = settings.APP_KEY
 DOMEN = settings.DOMEN
@@ -218,7 +219,9 @@ class IncomingMessageApiView(GenericAPIView):
     serializer_class = serializers.MessageSerializer
 
     def post(self, request):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(
+            data=request.data
+        )
 
         if serializer.is_valid(raise_exception=True):
             contract = get_object_or_404(
@@ -229,15 +232,10 @@ class IncomingMessageApiView(GenericAPIView):
             if serializer.data['message']['sender'] == 'patient':
                 return HttpResponse("ok")
 
-            date = serializer['message']['date'].value
             message = Message.objects.create(
                 contract=contract,
-                message_id=serializer.data['message']['id'],
-                text=serializer.data['message']['text'],
-                date=timezone.localtime(
-                    datetime.datetime.strptime(
-                        date,
-                        "%Y-%m-%d %H:%M:%S").astimezone(timezone.utc)),
+                medsenger_id=serializer.data['message'].pop('id'),
+                **serializer.data['message']
             )
 
             channel_layer = get_channel_layer()
@@ -245,8 +243,7 @@ class IncomingMessageApiView(GenericAPIView):
                 'message_%s' % contract.contract_id,
                 {
                     'type': 'receive_message',
-                    'message': message.text,
-                    'message_id': message.id
+                    'data': MessageSerializer(message).data
                 }
             )
 

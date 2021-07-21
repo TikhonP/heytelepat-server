@@ -9,6 +9,7 @@ from medsenger_agent.models import (
     MeasurementTaskGeneric,
     MedicineTaskGeneric,
     Contract,
+    Message,
 )
 
 
@@ -87,14 +88,26 @@ class TaskSerializer(serializers.Serializer):
     params = TaskModelSerializer()
 
 
-class MessageDataSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    text = serializers.CharField()
-    date = serializers.CharField()
-    sender = serializers.CharField()
+class MessageDataSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        request = kwargs.get('context', {}).get('request')
+
+        super().__init__(*args, **kwargs)
+        if request is not None:
+            self.fields['id'] = serializers.IntegerField(source='medsenger_id')
+
+    date = serializers.DateTimeField(input_formats=['%Y-%m-%d %H:%M:%S'])
+
+    class Meta:
+        model = Message
+        fields = ('sender', 'text', 'date')
 
 
 class MessageSerializer(serializers.Serializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['message'] = MessageDataSerializer(*args, **kwargs)
+
     api_key = ApiKeyField()
     contract_id = serializers.IntegerField()
     message = MessageDataSerializer()

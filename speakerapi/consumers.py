@@ -62,10 +62,11 @@ class WaitForAuthConsumer(AsyncJsonWebsocketConsumer):
         await self.send(json.dumps(serializer.errors, ensure_ascii=False))
         await self.close()
 
-    async def receive_authed(self, event):
+    async def receive_authed(self, _):
         await self.send('OK')
         await self.close()
 
+    @staticmethod
     def get_serializer(self, *, data):
         return serializers.CheckAuthSerializer(data=data)
 
@@ -94,11 +95,7 @@ class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
             pass
 
         if message is not None:
-            data = {
-                'text': message.text,
-                'id': message.id
-            }
-
+            data = serializers.MessageSerializer(message).data
             await self.send(json.dumps(data, ensure_ascii=False))
 
         self.room_group_name = 'message_%s' % kwargs['s'].contract.contract_id
@@ -109,16 +106,16 @@ class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
 
     async def make_message_notified(self, content, **kwargs):
         if 'message_id' not in content:
-            self.send_json({"message_id": ["field required"]})
-            self.close()
+            await self.send_json({"message_id": ["field required"]})
+            await self.close()
             return
 
         try:
             m = await database_sync_to_async(Message.objects.get)(
                 id=content['message_id'])
         except Message.DoesNotExist:
-            self.send_json(["Message does not exists with given id"])
-            self.close()
+            await self.send_json(["Message does not exists with given id"])
+            await self.close()
             return
 
         m.is_notified = True
@@ -126,16 +123,16 @@ class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
 
     async def make_message_red(self, content, **kwargs):
         if 'message_id' not in content:
-            self.send_json({"message_id": ["field required"]})
-            self.close()
+            await self.send_json({"message_id": ["field required"]})
+            await self.close()
             return
 
         try:
             m = await database_sync_to_async(Message.objects.get)(
                 id=content['message_id'])
         except Message.DoesNotExist:
-            self.send_json(["Message does not exists with given id"])
-            self.close()
+            await self.send_json(["Message does not exists with given id"])
+            await self.close()
             return
 
         m.is_red = True
@@ -169,10 +166,7 @@ class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
         await self.close()
 
     async def receive_message(self, event):
-        await self.send(json.dumps({
-                "text": event['message'],
-                "id": event['message_id']
-            }, ensure_ascii=False))
+        await self.send(json.dumps(event['data'], ensure_ascii=False))
 
 
 class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
@@ -327,16 +321,18 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
 
     @database_sync_to_async
     def get_medicine(self, content, **kwargs):
+        if not (measurement_id := content.get('measurement_id', False)):
+            return
         try:
             return MedicineTaskGeneric.objects.get(
-                id=content['measurement_id'])
+                id=measurement_id)
         except MedicineTaskGeneric.DoesNotExist:
             return
 
     async def is_sent(self, content, **kwargs):
         medicine = await self.get_medicine(content, **kwargs)
         if medicine is None:
-            await self.send(json.dumps(["Medicine does not exists"]))
+            await self.send(json.dumps(["Medicine or specify 'measurement_id'  does not exists"]))
             await self.close()
             return
 
@@ -346,7 +342,7 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
     async def is_done(self, content, **kwargs):
         medicine = await self.get_medicine(content, **kwargs)
         if medicine is None:
-            await self.send(json.dumps(["Measurement does not exists"]))
+            await self.send(json.dumps(["Medicine or specify 'measurement_id' does not exists"]))
             await self.close()
             return
 
