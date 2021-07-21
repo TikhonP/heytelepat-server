@@ -6,7 +6,7 @@ from medsenger_agent.models import Message
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ('text', 'id', 'date')
+        fields = '__all__'
 
 
 class CommentSerializer(serializers.Serializer):

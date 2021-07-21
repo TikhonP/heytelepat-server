@@ -81,9 +81,10 @@ class Message(models.Model):
     contract = models.ForeignKey(
         Contract, on_delete=models.CASCADE, null=True, default=None)
 
-    message_id = models.IntegerField()
+    sender = models.CharField(default='doctor', max_length=255)
     text = models.TextField()
     date = models.DateTimeField()
+    medsenger_id = models.IntegerField(default=1)
 
     is_red = models.BooleanField(default=False)
     is_notified = models.BooleanField(default=False)
