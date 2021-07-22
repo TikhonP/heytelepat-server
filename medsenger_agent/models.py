@@ -1,6 +1,8 @@
-from django.db import models
-import secrets
 import random
+import secrets
+
+from django.db import models
+from packaging import version
 
 
 class Contract(models.Model):
@@ -16,6 +18,7 @@ class Speaker(models.Model):
     token = models.CharField(max_length=255, unique=True)
     contract = models.ForeignKey(
         Contract, null=True, default=None, on_delete=models.CASCADE)
+    version = models.CharField(default='null', max_length=13)
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -23,11 +26,14 @@ class Speaker(models.Model):
             self.token = secrets.token_urlsafe(16)
             self.code = random.randint(100000, 999999)
 
+        if self.version != 'null' and isinstance(version.parse(self.version), version.LegacyVersion):
+            raise ValidationError("Version is not valid, got `{}`".format(self.version))
+
         return super(Speaker, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "Speker ({}) - {}".format(
-            self.id, self.contract)
+        return "Speaker `{}` ({}) - {}".format(
+            self.version, self.id, self.contract)
 
 
 class MeasurementTaskGeneric(models.Model):
