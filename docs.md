@@ -36,14 +36,14 @@ No yet
 * [SPEAKER](#speaker)
 
   * [SPEAKER commit medicine](#1-speaker-commit-medicine)
-  * [SPEAKER get list of all categories](#2-speaker-get-list-of-all-categories)
-  * [SPEAKER init](#3-speaker-init)
-  * [SPEAKER measurements list and patch](#4-speaker-measurements-list-and-patch)
+  * [SPEAKER firmware](#2-speaker-firmware)
+  * [SPEAKER get list of all categories](#3-speaker-get-list-of-all-categories)
+  * [SPEAKER measurement (get list/push/patch)](#4-speaker-measurement-(get-listpushpatch))
   * [SPEAKER medicines list](#5-speaker-medicines-list)
   * [SPEAKER messages](#6-speaker-messages)
   * [SPEAKER push value](#7-speaker-push-value)
-  * [SPEAKER remove](#8-speaker-remove)
-  * [SPEAKER send message](#9-speaker-send-message)
+  * [SPEAKER send message](#8-speaker-send-message)
+  * [SPEAKER speaker (get/create/update/delete)](#9-speaker-speaker-(getcreateupdatedelete))
 
 
 --------
@@ -549,7 +549,7 @@ URL: http://127.0.0.1:8000/medsenger/status
 ```bash
 Method: POST
 Type: RAW
-URL: http://127.0.0.1:8000/speakerapi/medicine/commit/
+URL: http://127.0.0.1:8000/speaker/api/v1/medicine/commit/
 ```
 
 
@@ -597,16 +597,16 @@ URL: http://127.0.0.1:8000/speakerapi/medicine/commit/
 
 
 
-### 2. SPEAKER get list of all categories
+### 2. SPEAKER firmware
 
 
 
 ***Endpoint:***
 
 ```bash
-Method: GET
+Method: POST
 Type: RAW
-URL: http://127.0.0.1:8000/speakerapi/getlistcategories/
+URL: http://127.0.0.1:8000/speakerapi/firmware/
 ```
 
 
@@ -615,8 +615,7 @@ URL: http://127.0.0.1:8000/speakerapi/getlistcategories/
 
 ```js        
 {
-    "token": "{{token}}",
-    "names_only": true
+    "token": "{{token}}"
 }
 ```
 
@@ -625,7 +624,78 @@ URL: http://127.0.0.1:8000/speakerapi/getlistcategories/
 ***More example Requests/Responses:***
 
 
-##### I. Example Request: SPEAKER get list of all categories
+##### I. Example Request: SPEAKER firmware
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}"
+}
+```
+
+
+
+##### I. Example Response: SPEAKER firmware
+```js
+{
+    "new_firmware": "0.0.2"
+}
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+##### II. Example Request: SPEAKER firmware
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "version": "0.0.2"
+}
+```
+
+
+
+##### II. Example Response: SPEAKER firmware
+```js
+{
+    "id": 1,
+    "version": "0.0.2",
+    "data": "/media/firmwares/speaker_firmware_0.0.2.zip",
+    "is_active": true,
+    "date": "2021-07-22T18:09:29.549618+03:00"
+}
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+### 3. SPEAKER get list of all categories
+
+
+
+***Endpoint:***
+
+```bash
+Method: GET
+Type: RAW
+URL: http://127.0.0.1:8000/speaker/api/v1/measurement/categories/
+```
 
 
 
@@ -640,7 +710,62 @@ URL: http://127.0.0.1:8000/speakerapi/getlistcategories/
 
 
 
-##### I. Example Response: SPEAKER get list of all categories
+***More example Requests/Responses:***
+
+
+##### I. Example Request: SPEAKER get list of all categories names only
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "names_only": true
+}
+```
+
+
+
+##### I. Example Response: SPEAKER get list of all categories names only
+```js
+[
+    "medicines",
+    "diastolic_pressure",
+    "pulse",
+    "weight",
+    "systolic_pressure",
+    "temperature",
+    "glukose",
+    "medicine",
+    "information"
+]
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+##### II. Example Request: SPEAKER get list of all categories
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "names_only": false
+}
+```
+
+
+
+##### II. Example Response: SPEAKER get list of all categories
 ```js
 [
     {
@@ -743,82 +868,7 @@ URL: http://127.0.0.1:8000/speakerapi/getlistcategories/
 
 
 
-##### II. Example Request: SPEAKER get list of all categories
-
-
-
-***Body:***
-
-```js        
-{
-    "token": "{{token}}",
-    "names_only": true
-}
-```
-
-
-
-##### II. Example Response: SPEAKER get list of all categories
-```js
-[
-    "medicines",
-    "diastolic_pressure",
-    "pulse",
-    "weight",
-    "systolic_pressure",
-    "temperature",
-    "glukose",
-    "medicine",
-    "information"
-]
-```
-
-
-***Status Code:*** 200
-
-<br>
-
-
-
-### 3. SPEAKER init
-
-
-Speaker initialization
-
-
-***Endpoint:***
-
-```bash
-Method: POST
-Type: 
-URL: http://127.0.0.1:8000/speakerapi/init/
-```
-
-
-
-***More example Requests/Responses:***
-
-
-##### I. Example Request: SPEAKER init
-
-
-
-##### I. Example Response: SPEAKER init
-```js
-{
-    "code": 155948,
-    "token": "ze7a2O3JQDD6AbLk9zDDkw"
-}
-```
-
-
-***Status Code:*** 200
-
-<br>
-
-
-
-### 4. SPEAKER measurements list and patch
+### 4. SPEAKER measurement (get list/push/patch)
 
 
 Get list of all measurements and push status.
@@ -832,7 +882,7 @@ Returns model instance.
 ```bash
 Method: GET
 Type: RAW
-URL: http://127.0.0.1:8000/speakerapi/measurements/
+URL: http://127.0.0.1:8000/speaker/api/v1/measurement/
 ```
 
 
@@ -851,66 +901,7 @@ URL: http://127.0.0.1:8000/speakerapi/measurements/
 ***More example Requests/Responses:***
 
 
-##### I. Example Request: SPEAKER measurements list and patch
-
-
-
-***Body:***
-
-```js        
-{
-    "token": "{{token}}",
-    "request_type": "is_done",
-    "measurement_id": 14
-}
-```
-
-
-
-##### I. Example Response: SPEAKER measurements list and patch
-```js
-{
-    "id": 14,
-    "contract": 3808,
-    "fields": [
-        {
-            "id": 1,
-            "uid": "24c2258b-d338-4184-a114-5cae3721bb16",
-            "category": "glukose",
-            "description": "ммоль/л",
-            "max_value": null,
-            "min_value": null,
-            "text": "Глюкоза",
-            "value_type": "float"
-        },
-        {
-            "id": 2,
-            "uid": "93722301-d652-4903-8404-e56da4d31ad7",
-            "category": "information",
-            "description": null,
-            "max_value": null,
-            "min_value": null,
-            "text": "Комментарий",
-            "value_type": "textarea"
-        }
-    ],
-    "title": "Глюкоза",
-    "doctor_description": "Запрашивает у пациента уровень глюкозы в крови.",
-    "patient_description": "Пожалуйста, измерьте уровень сахара в крови до еды с помощью глюкометра и укажите его в поле ниже.",
-    "thanks_text": null,
-    "is_sent": true,
-    "is_done": true
-}
-```
-
-
-***Status Code:*** 200
-
-<br>
-
-
-
-##### II. Example Request: SPEAKER measurements list and patch
+##### I. Example Request: SPEAKER measurement (get list)
 
 
 
@@ -925,7 +916,7 @@ URL: http://127.0.0.1:8000/speakerapi/measurements/
 
 
 
-##### II. Example Response: SPEAKER measurements list and patch
+##### I. Example Response: SPEAKER measurement (get list)
 ```js
 [
     {
@@ -973,6 +964,68 @@ URL: http://127.0.0.1:8000/speakerapi/measurements/
 
 
 
+##### II. Example Request: SPEAKER measurement (patch)
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "request_type": "is_sent",
+    "measurement_id": 17
+}
+```
+
+
+
+##### II. Example Response: SPEAKER measurement (patch)
+```js
+{
+    "id": 17,
+    "contract": 3808,
+    "fields": [
+        {
+            "id": 1,
+            "uid": "24c2258b-d338-4184-a114-5cae3721bb16",
+            "category": "glukose",
+            "description": "ммоль/л",
+            "max_value": null,
+            "min_value": null,
+            "text": "Глюкоза",
+            "value_type": "float",
+            "prefix": null
+        },
+        {
+            "id": 6,
+            "uid": "93722301-d652-4903-8404-e56da4d31ad7",
+            "category": "information",
+            "description": null,
+            "max_value": null,
+            "min_value": null,
+            "text": "Комментарий",
+            "value_type": "textarea",
+            "prefix": "Комментарий пациента -"
+        }
+    ],
+    "title": "Глюкоза",
+    "doctor_description": "Запрашивает у пациента уровень глюкозы в крови.",
+    "patient_description": "Пожалуйста, измерьте уровень сахара в крови до еды с помощью глюкометра и укажите его в поле ниже.",
+    "thanks_text": null,
+    "custom_text": null,
+    "is_sent": true,
+    "is_done": false
+}
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
 ### 5. SPEAKER medicines list
 
 
@@ -980,9 +1033,9 @@ URL: http://127.0.0.1:8000/speakerapi/measurements/
 ***Endpoint:***
 
 ```bash
-Method: GET
+Method: PATCH
 Type: RAW
-URL: http://127.0.0.1:8000/speakerapi/medicine/
+URL: http://127.0.0.1:8000/speaker/api/v1/medicine/
 ```
 
 
@@ -992,7 +1045,8 @@ URL: http://127.0.0.1:8000/speakerapi/medicine/
 ```js        
 {
     "token": "{{token}}",
-    "request_type": "init"
+    "request_type": "is_done",
+    "measurement_id": 3
 }
 ```
 
@@ -1020,10 +1074,10 @@ URL: http://127.0.0.1:8000/speakerapi/medicine/
 ```js
 [
     {
-        "id": 13,
+        "id": 3,
         "contract": 3808,
-        "title": "ghj",
-        "rules": "asd",
+        "title": "Бубарин",
+        "rules": "По одной бубине",
         "is_sent": false,
         "is_done": false
     }
@@ -1037,7 +1091,7 @@ URL: http://127.0.0.1:8000/speakerapi/medicine/
 
 
 
-##### II. Example Request: SPEAKER medicines list
+##### II. Example Request: SPEAKER medicine patch
 
 
 
@@ -1047,19 +1101,19 @@ URL: http://127.0.0.1:8000/speakerapi/medicine/
 {
     "token": "{{token}}",
     "request_type": "is_done",
-    "measurement_id": 13
+    "measurement_id": 3
 }
 ```
 
 
 
-##### II. Example Response: SPEAKER medicines list
+##### II. Example Response: SPEAKER medicine patch
 ```js
 {
-    "id": 13,
+    "id": 3,
     "contract": 3808,
-    "title": "ghj",
-    "rules": "asd",
+    "title": "Бубарин",
+    "rules": "По одной бубине",
     "is_sent": false,
     "is_done": true
 }
@@ -1083,7 +1137,7 @@ Get messages list
 ```bash
 Method: GET
 Type: RAW
-URL: http://127.0.0.1:8000/speakerapi/incomingmessage/
+URL: http://127.0.0.1:8000/speaker/api/v1/message/
 ```
 
 
@@ -1119,9 +1173,14 @@ URL: http://127.0.0.1:8000/speakerapi/incomingmessage/
 ```js
 [
     {
-        "text": "Тестqw",
-        "id": 3,
-        "date": "2021-06-11T11:30:32+03:00"
+        "id": 5,
+        "sender": "doctor",
+        "text": "Лалаоаос",
+        "date": "2021-07-21T17:47:40+03:00",
+        "medsenger_id": 249532,
+        "is_red": true,
+        "is_notified": true,
+        "contract": 3808
     }
 ]
 ```
@@ -1136,15 +1195,13 @@ URL: http://127.0.0.1:8000/speakerapi/incomingmessage/
 ### 7. SPEAKER push value
 
 
-Push value with given category is and value
-
 
 ***Endpoint:***
 
 ```bash
 Method: POST
 Type: RAW
-URL: http://127.0.0.1:8000/speakerapi/pushvalue/
+URL: http://127.0.0.1:8000/speaker/api/v1/measurement/push/
 ```
 
 
@@ -1156,8 +1213,8 @@ URL: http://127.0.0.1:8000/speakerapi/pushvalue/
     "token": "{{token}}",
     "values": [
         {
-            "category_name": "fds",
-            "value": "sd"
+            "category_name": "glukose",
+            "value": "4.3"
         }
     ]
 }
@@ -1179,8 +1236,8 @@ URL: http://127.0.0.1:8000/speakerapi/pushvalue/
     "token": "{{token}}",
     "values": [
         {
-            "category_name": "fds",
-            "value": "sd"
+            "category_name": "glukose",
+            "value": "4.3"
         }
     ]
 }
@@ -1202,62 +1259,7 @@ URL: http://127.0.0.1:8000/speakerapi/pushvalue/
 
 
 
-### 8. SPEAKER remove
-
-
-
-***Endpoint:***
-
-```bash
-Method: DELETE
-Type: RAW
-URL: http://127.0.0.1:8000/speakerapi/remove/
-```
-
-
-
-***Body:***
-
-```js        
-{
-    "token": "{{token}}"
-}
-```
-
-
-
-***More example Requests/Responses:***
-
-
-##### I. Example Request: SPEAKER remove
-
-
-
-***Body:***
-
-```js        
-{
-    "token": "{{token}}"
-}
-```
-
-
-
-##### I. Example Response: SPEAKER remove
-```js
-[
-    "ok"
-]
-```
-
-
-***Status Code:*** 200
-
-<br>
-
-
-
-### 9. SPEAKER send message
+### 8. SPEAKER send message
 
 
 
@@ -1266,7 +1268,7 @@ URL: http://127.0.0.1:8000/speakerapi/remove/
 ```bash
 Method: POST
 Type: RAW
-URL: http://127.0.0.1:8000/speakerapi/sendmessage/
+URL: http://127.0.0.1:8000/speaker/api/v1/message/send/
 ```
 
 
@@ -1314,6 +1316,147 @@ URL: http://127.0.0.1:8000/speakerapi/sendmessage/
 
 
 
+### 9. SPEAKER speaker (get/create/update/delete)
+
+
+
+***Endpoint:***
+
+```bash
+Method: POST
+Type: RAW
+URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
+```
+
+
+
+***Body:***
+
+```js        
+{
+    "version": "0.0.1"
+}
+```
+
+
+
+***More example Requests/Responses:***
+
+
+##### I. Example Request: SPEAKER speaker (create)
+
+
+
+***Body:***
+
+```js        
+{
+    "version": "0.0.1"
+}
+```
+
+
+
+##### I. Example Response: SPEAKER speaker (create)
+```js
+{
+    "id": 14,
+    "code": "560632",
+    "token": "yyLgKYXYr3otTa1J7DMNDA",
+    "version": "0.0.1"
+}
+```
+
+
+***Status Code:*** 201
+
+<br>
+
+
+
+##### II. Example Request: SPEAKER speaker (get)
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}"
+}
+```
+
+
+
+##### II. Example Response: SPEAKER speaker (get)
+```js
+{
+    "id": 14,
+    "code": "560632",
+    "token": "CqZbVsePBoVeemN0t3oiSQ",
+    "version": "0.0.1"
+}
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+##### III. Example Request: SPEAKER speaker (update)
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}",
+    "version": "0.0.2"
+}
+```
+
+
+
+##### III. Example Response: SPEAKER speaker (update)
+```js
+{
+    "id": 14,
+    "code": "560632",
+    "token": "CqZbVsePBoVeemN0t3oiSQ",
+    "version": "0.0.2"
+}
+```
+
+
+***Status Code:*** 200
+
+<br>
+
+
+
+##### IV. Example Request: SPEAKER speaker (delete)
+
+
+
+***Body:***
+
+```js        
+{
+    "token": "{{token}}"
+}
+```
+
+
+
+***Status Code:*** 204
+
+<br>
+
+
+
 ***Available Variables:***
 
 | Key | Value | Type |
@@ -1326,4 +1469,4 @@ URL: http://127.0.0.1:8000/speakerapi/sendmessage/
 
 ---
 [Back to top](#heytelepat)
-> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-21 18:39:25 by [docgen](https://github.com/thedevsaddam/docgen)
+> Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-07-22 21:56:34 by [docgen](https://github.com/thedevsaddam/docgen)
