@@ -1,6 +1,34 @@
 from rest_framework import serializers
 
-from medsenger_agent.models import Message
+from medsenger_agent.models import Message, Speaker
+from speakerapi.models import Firmware
+
+
+class FirmwareSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Firmware
+        fields = '__all__'
+
+
+class SpeakerSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        request = kwargs.get('context', {}).get('request')
+
+        super().__init__(*args, **kwargs)
+        if request:
+            if request.META.get('REQUEST_METHOD') != 'POST':
+                self.fields['token'] = serializers.CharField(read_only=False)
+            if request.META.get('REQUEST_METHOD') == 'GET':
+                self.fields['version'] = serializers.CharField(read_only=True)
+
+    code = serializers.CharField(read_only=True)
+    token = serializers.CharField(read_only=True)
+    # contract = serializers.RelatedField(read_only=True)
+    date = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = Speaker
+        exclude = ('contract',)
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -29,8 +57,9 @@ class CommitMedicineSerializer(serializers.Serializer):
     medicine = serializers.CharField()
 
 
-class CheckAuthSerializer(serializers.Serializer):
+class CheckFirmwareSerializer(serializers.Serializer):
     token = serializers.CharField()
+    version = serializers.CharField(required=False)
 
 
 class IncomingMessageNotify(serializers.Serializer):

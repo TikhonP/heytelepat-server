@@ -67,7 +67,7 @@ class WaitForAuthConsumer(AsyncJsonWebsocketConsumer):
 
     @staticmethod
     def get_serializer(*args, **kwargs):
-        return serializers.CheckAuthSerializer(*args, **kwargs)
+        return serializers.CheckFirmwareSerializer(*args, **kwargs)
 
 
 class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):

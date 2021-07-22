@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from medsenger_agent import models
 
 admin.site.register(models.Contract)
