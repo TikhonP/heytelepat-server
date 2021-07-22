@@ -15,7 +15,6 @@ from medsenger_agent.models import (
 from speakerapi import serializers
 from medsenger_agent import serializers as ma_serializers
 
-
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
 
 
@@ -46,7 +45,7 @@ class WaitForAuthConsumer(AsyncJsonWebsocketConsumer):
 
             s = await database_sync_to_async(
                 Speaker.objects.select_related('contract').get)(
-                    token=token)
+                token=token)
 
             if s.contract is not None:
                 await self.send('OK')
@@ -67,8 +66,8 @@ class WaitForAuthConsumer(AsyncJsonWebsocketConsumer):
         await self.close()
 
     @staticmethod
-    def get_serializer(self, *, data):
-        return serializers.CheckAuthSerializer(data=data)
+    def get_serializer(*args, **kwargs):
+        return serializers.CheckAuthSerializer(*args, **kwargs)
 
 
 class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
@@ -88,7 +87,7 @@ class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
         try:
             m = await database_sync_to_async(
                 Message.objects.filter)(
-                    contract=kwargs['s'].contract, is_notified=False)
+                contract=kwargs['s'].contract, is_notified=False)
             message = await database_sync_to_async(
                 m.earliest)('date')
         except Message.DoesNotExist:
@@ -146,7 +145,7 @@ class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
             try:
                 s = await database_sync_to_async(
                     Speaker.objects.select_related('contract').get)(
-                        token=token)
+                    token=token)
                 kwargs['s'] = s
             except Speaker.DoesNotExist:
                 await self.send("Invalid token")
@@ -189,7 +188,7 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
         try:
             m = await database_sync_to_async(
                 MeasurementTask.objects.filter)(
-                    contract=kwargs['s'].contract, is_sent=False)
+                contract=kwargs['s'].contract, is_sent=False)
             m = await database_sync_to_async(
                 m.prefetch_related)('fields')
             measurement = await database_sync_to_async(
@@ -236,7 +235,8 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
         measurement.is_done = True
         await database_sync_to_async(measurement.save)()
 
-    async def push_value(self, content, **kwargs):
+    @staticmethod
+    def push_value(content, **kwargs):
         aac.add_record(
             kwargs['s'].contract.contract_id,
             content['category_name'],
@@ -250,7 +250,7 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
             try:
                 s = await database_sync_to_async(
                     Speaker.objects.select_related('contract').get)(
-                        token=serializer.data['token'])
+                    token=serializer.data['token'])
                 kwargs['s'] = s
             except Speaker.DoesNotExist:
                 await self.send("Invalid token")
@@ -264,7 +264,7 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
             elif serializer.data['request_type'] == 'is_done':
                 return await self.is_done(serializer.data, **kwargs)
             elif serializer.data['request_type'] == 'pushvalue':
-                return await self.push_value(serializer.data, **kwargs)
+                return self.push_value(serializer.data, **kwargs)
             else:
                 await self.send(json.dumps(
                     {'request_type': ['Invalid request type']},
@@ -300,7 +300,7 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
         try:
             m = await database_sync_to_async(
                 MedicineTaskGeneric.objects.filter)(
-                    contract=kwargs['s'].contract, is_sent=False)
+                contract=kwargs['s'].contract, is_sent=False)
             medicine = await database_sync_to_async(
                 m.earliest)('date')
         except MedicineTaskGeneric.DoesNotExist:
@@ -349,7 +349,8 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
         medicine.is_done = True
         await database_sync_to_async(medicine.save)()
 
-    async def push_value(self, content, **kwargs):
+    @staticmethod
+    def push_value(content, **kwargs):
         aac.add_record(
             kwargs['s'].contract.contract_id,
             'medicine',
@@ -363,7 +364,7 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
             try:
                 s = await database_sync_to_async(
                     Speaker.objects.select_related('contract').get)(
-                        token=serializer.data['token'])
+                    token=serializer.data['token'])
                 kwargs['s'] = s
             except Speaker.DoesNotExist:
                 await self.send("Invalid token")
@@ -378,7 +379,7 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
                 elif serializer.data['request_type'] == 'is_done':
                     return await self.is_done(serializer.data, **kwargs)
                 elif serializer.data['request_type'] == 'pushvalue':
-                    return await self.push_value(serializer.data, **kwargs)
+                    return self.push_value(serializer.data, **kwargs)
                 else:
                     await self.send(json.dumps(
                         {'request_type': ['Invalid request type']},
