@@ -1,16 +1,19 @@
-
 # Heytelepat
 
 # Introduction
+
 Interact with ***REMOVED***-agent
 
 # Overview
+
 Medsenger agent is for connection to medsenger api and Speaker api is for connecting from speaker
 
 # Authentication
+
 api_key/token
 
 # Error Codes
+
 200 - ok
 
 400 - bad request, see answer for detail
@@ -20,44 +23,39 @@ api_key/token
 500 - internal server error
 
 # Rate limit
+
 No yet
 
 ## Indices
 
 * [MEDSENGER](#medsenger)
 
-  * [MEDSENGER Add New Device](#1-medsenger-add-new-device)
-  * [MEDSENGER Incoming message](#2-medsenger-incoming-message)
-  * [MEDSENGER init](#3-medsenger-init)
-  * [MEDSENGER order](#4-medsenger-order)
-  * [MEDSENGER remove](#5-medsenger-remove)
-  * [MEDSENGER status](#6-medsenger-status)
+    * [MEDSENGER Add New Device](#1-medsenger-add-new-device)
+    * [MEDSENGER Incoming message](#2-medsenger-incoming-message)
+    * [MEDSENGER init](#3-medsenger-init)
+    * [MEDSENGER order](#4-medsenger-order)
+    * [MEDSENGER remove](#5-medsenger-remove)
+    * [MEDSENGER status](#6-medsenger-status)
 
 * [SPEAKER](#speaker)
 
-  * [SPEAKER commit medicine](#1-speaker-commit-medicine)
-  * [SPEAKER firmware](#2-speaker-firmware)
-  * [SPEAKER get list of all categories](#3-speaker-get-list-of-all-categories)
-  * [SPEAKER measurement (get list/push/patch)](#4-speaker-measurement-(get-listpushpatch))
-  * [SPEAKER medicines list](#5-speaker-medicines-list)
-  * [SPEAKER messages](#6-speaker-messages)
-  * [SPEAKER push value](#7-speaker-push-value)
-  * [SPEAKER send message](#8-speaker-send-message)
-  * [SPEAKER speaker (get/create/update/delete)](#9-speaker-speaker-(getcreateupdatedelete))
-
+    * [SPEAKER commit medicine](#1-speaker-commit-medicine)
+    * [SPEAKER firmware](#2-speaker-firmware)
+    * [SPEAKER get list of all categories](#3-speaker-get-list-of-all-categories)
+    * [SPEAKER measurement (get list/push/patch)](#4-speaker-measurement-(get-listpushpatch))
+    * [SPEAKER medicines list](#5-speaker-medicines-list)
+    * [SPEAKER messages](#6-speaker-messages)
+    * [SPEAKER push value](#7-speaker-push-value)
+    * [SPEAKER send message](#8-speaker-send-message)
+    * [SPEAKER speaker (get/create/update/delete)](#9-speaker-speaker-(getcreateupdatedelete))
 
 --------
 
-
 ## MEDSENGER
-
-
 
 ### 1. MEDSENGER Add New Device
 
-
 Handles connection of device and notifies speaker socket
-
 
 ***Endpoint:***
 
@@ -67,8 +65,6 @@ Type: FORMDATA
 URL: http://127.0.0.1:8000/medsenger/newdevice
 ```
 
-
-
 ***Body:***
 
 | Key | Value | Description |
@@ -76,13 +72,9 @@ URL: http://127.0.0.1:8000/medsenger/newdevice
 | code | 864284 |  |
 | contract_id | 3808 |  |
 
-
-
 ### 2. MEDSENGER Incoming message
 
-
 Handles incoming message and notifies speaker socket
-
 
 ***Endpoint:***
 
@@ -92,8 +84,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/medsenger/message
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -108,15 +98,10 @@ URL: http://127.0.0.1:8000/medsenger/message
     }
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: MEDSENGER Incoming message
-
-
 
 ***Body:***
 
@@ -133,25 +118,19 @@ URL: http://127.0.0.1:8000/medsenger/message
 }
 ```
 
-
-
 ##### I. Example Response: MEDSENGER Incoming message
+
 ```js
 ok
 ```
-
 
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 3. MEDSENGER init
 
-
 Connect consultation channel
-
 
 ***Endpoint:***
 
@@ -161,8 +140,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/medsenger/init
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -171,15 +148,10 @@ URL: http://127.0.0.1:8000/medsenger/init
     "contract_id": 3808
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: MEDSENGER init
-
-
 
 ***Body:***
 
@@ -190,25 +162,19 @@ URL: http://127.0.0.1:8000/medsenger/init
 }
 ```
 
-
-
 ##### I. Example Response: MEDSENGER init
+
 ```js
 ok
 ```
-
 
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 4. MEDSENGER order
 
-
 Handles order medicines or forms and notifies speaker socket
-
 
 ***Endpoint:***
 
@@ -218,8 +184,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/medsenger/order
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -285,15 +249,10 @@ URL: http://127.0.0.1:8000/medsenger/order
     }
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: MEDSENGER order
-
-
 
 ***Body:***
 
@@ -361,23 +320,17 @@ URL: http://127.0.0.1:8000/medsenger/order
 }
 ```
 
-
-
 ##### I. Example Response: MEDSENGER order
+
 ```js
 ok
 ```
-
 
 ***Status Code:*** 200
 
 <br>
 
-
-
 ##### II. Example Request: MEDSENGER order
-
-
 
 ***Body:***
 
@@ -404,25 +357,19 @@ ok
 
 ```
 
-
-
 ##### II. Example Response: MEDSENGER order
+
 ```js
 ok
 ```
-
 
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 5. MEDSENGER remove
 
-
 Delete consultation channel
-
 
 ***Endpoint:***
 
@@ -432,8 +379,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/medsenger/remove
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -442,15 +387,10 @@ URL: http://127.0.0.1:8000/medsenger/remove
     "contract_id": 3808
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: MEDSENGER remove
-
-
 
 ***Body:***
 
@@ -461,25 +401,19 @@ URL: http://127.0.0.1:8000/medsenger/remove
 }
 ```
 
-
-
 ##### I. Example Response: MEDSENGER remove
+
 ```js
 ok
 ```
-
 
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 6. MEDSENGER status
 
-
 Check status
-
 
 ***Endpoint:***
 
@@ -489,8 +423,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/medsenger/status
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -498,15 +430,10 @@ URL: http://127.0.0.1:8000/medsenger/status
     "api_key": "{{api_key}}"
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: MEDSENGER status
-
-
 
 ***Body:***
 
@@ -516,9 +443,8 @@ URL: http://127.0.0.1:8000/medsenger/status
 }
 ```
 
-
-
 ##### I. Example Response: MEDSENGER status
+
 ```js
 {
     "is_tracking_data": true,
@@ -529,20 +455,13 @@ URL: http://127.0.0.1:8000/medsenger/status
 }
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ## SPEAKER
 
-
-
 ### 1. SPEAKER commit medicine
-
-
 
 ***Endpoint:***
 
@@ -552,8 +471,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/speaker/api/v1/medicine/commit/
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -562,15 +479,10 @@ URL: http://127.0.0.1:8000/speaker/api/v1/medicine/commit/
     "medicine": "Бубарин"
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: SPEAKER commit medicine
-
-
 
 ***Body:***
 
@@ -581,25 +493,19 @@ URL: http://127.0.0.1:8000/speaker/api/v1/medicine/commit/
 }
 ```
 
-
-
 ##### I. Example Response: SPEAKER commit medicine
+
 ```js
 [
     "ok"
 ]
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 2. SPEAKER firmware
-
-
 
 ***Endpoint:***
 
@@ -609,8 +515,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/speakerapi/firmware/
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -618,15 +522,10 @@ URL: http://127.0.0.1:8000/speakerapi/firmware/
     "token": "{{token}}"
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: SPEAKER firmware
-
-
 
 ***Body:***
 
@@ -636,25 +535,19 @@ URL: http://127.0.0.1:8000/speakerapi/firmware/
 }
 ```
 
-
-
 ##### I. Example Response: SPEAKER firmware
+
 ```js
 {
     "new_firmware": "0.0.2"
 }
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ##### II. Example Request: SPEAKER firmware
-
-
 
 ***Body:***
 
@@ -665,9 +558,8 @@ URL: http://127.0.0.1:8000/speakerapi/firmware/
 }
 ```
 
-
-
 ##### II. Example Response: SPEAKER firmware
+
 ```js
 {
     "id": 1,
@@ -678,16 +570,11 @@ URL: http://127.0.0.1:8000/speakerapi/firmware/
 }
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 3. SPEAKER get list of all categories
-
-
 
 ***Endpoint:***
 
@@ -696,8 +583,6 @@ Method: GET
 Type: RAW
 URL: http://127.0.0.1:8000/speaker/api/v1/measurement/categories/
 ```
-
-
 
 ***Body:***
 
@@ -708,14 +593,9 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/categories/
 }
 ```
 
-
-
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: SPEAKER get list of all categories names only
-
-
 
 ***Body:***
 
@@ -726,9 +606,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/categories/
 }
 ```
 
-
-
 ##### I. Example Response: SPEAKER get list of all categories names only
+
 ```js
 [
     "medicines",
@@ -743,16 +622,11 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/categories/
 ]
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ##### II. Example Request: SPEAKER get list of all categories
-
-
 
 ***Body:***
 
@@ -763,9 +637,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/categories/
 }
 ```
 
-
-
 ##### II. Example Response: SPEAKER get list of all categories
+
 ```js
 [
     {
@@ -861,21 +734,14 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/categories/
 ]
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 4. SPEAKER measurement (get list/push/patch)
 
-
-Get list of all measurements and push status.
-If `request_type` set to `is_sent`, then model's `.is_sent` attribute will be `True`.
-If `request_type` set to `is_done`, then model's `.is_done` attribute will be `True`.
-Returns model instance.
-
+Get list of all measurements and push status. If `request_type` set to `is_sent`, then model's `.is_sent` attribute will
+be `True`. If `request_type` set to `is_done`, then model's `.is_done` attribute will be `True`. Returns model instance.
 
 ***Endpoint:***
 
@@ -885,8 +751,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/speaker/api/v1/measurement/
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -895,15 +759,10 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/
     "request_type": "get"
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: SPEAKER measurement (get list)
-
-
 
 ***Body:***
 
@@ -914,9 +773,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/
 }
 ```
 
-
-
 ##### I. Example Response: SPEAKER measurement (get list)
+
 ```js
 [
     {
@@ -957,16 +815,11 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/
 ]
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ##### II. Example Request: SPEAKER measurement (patch)
-
-
 
 ***Body:***
 
@@ -978,9 +831,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/
 }
 ```
 
-
-
 ##### II. Example Response: SPEAKER measurement (patch)
+
 ```js
 {
     "id": 17,
@@ -1019,16 +871,11 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/
 }
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 5. SPEAKER medicines list
-
-
 
 ***Endpoint:***
 
@@ -1037,8 +884,6 @@ Method: PATCH
 Type: RAW
 URL: http://127.0.0.1:8000/speaker/api/v1/medicine/
 ```
-
-
 
 ***Body:***
 
@@ -1050,14 +895,9 @@ URL: http://127.0.0.1:8000/speaker/api/v1/medicine/
 }
 ```
 
-
-
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: SPEAKER medicines list
-
-
 
 ***Body:***
 
@@ -1068,9 +908,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/medicine/
 }
 ```
 
-
-
 ##### I. Example Response: SPEAKER medicines list
+
 ```js
 [
     {
@@ -1084,16 +923,11 @@ URL: http://127.0.0.1:8000/speaker/api/v1/medicine/
 ]
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ##### II. Example Request: SPEAKER medicine patch
-
-
 
 ***Body:***
 
@@ -1105,9 +939,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/medicine/
 }
 ```
 
-
-
 ##### II. Example Response: SPEAKER medicine patch
+
 ```js
 {
     "id": 3,
@@ -1119,18 +952,13 @@ URL: http://127.0.0.1:8000/speaker/api/v1/medicine/
 }
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 6. SPEAKER messages
 
-
 Get messages list
-
 
 ***Endpoint:***
 
@@ -1140,8 +968,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/speaker/api/v1/message/
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -1149,15 +975,10 @@ URL: http://127.0.0.1:8000/speaker/api/v1/message/
     "token": "{{token}}"
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: SPEAKER messages
-
-
 
 ***Body:***
 
@@ -1167,9 +988,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/message/
 }
 ```
 
-
-
 ##### I. Example Response: SPEAKER messages
+
 ```js
 [
     {
@@ -1185,16 +1005,11 @@ URL: http://127.0.0.1:8000/speaker/api/v1/message/
 ]
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 7. SPEAKER push value
-
-
 
 ***Endpoint:***
 
@@ -1204,8 +1019,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/speaker/api/v1/measurement/push/
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -1219,15 +1032,10 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/push/
     ]
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: SPEAKER push value
-
-
 
 ***Body:***
 
@@ -1243,25 +1051,19 @@ URL: http://127.0.0.1:8000/speaker/api/v1/measurement/push/
 }
 ```
 
-
-
 ##### I. Example Response: SPEAKER push value
+
 ```js
 [
     "ok"
 ]
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 8. SPEAKER send message
-
-
 
 ***Endpoint:***
 
@@ -1271,8 +1073,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/speaker/api/v1/message/send/
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -1281,15 +1081,10 @@ URL: http://127.0.0.1:8000/speaker/api/v1/message/send/
     "message": "sample message"
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: SPEAKER send message
-
-
 
 ***Body:***
 
@@ -1300,25 +1095,19 @@ URL: http://127.0.0.1:8000/speaker/api/v1/message/send/
 }
 ```
 
-
-
 ##### I. Example Response: SPEAKER send message
+
 ```js
 [
     "ok"
 ]
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ### 9. SPEAKER speaker (get/create/update/delete)
-
-
 
 ***Endpoint:***
 
@@ -1328,8 +1117,6 @@ Type: RAW
 URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
 ```
 
-
-
 ***Body:***
 
 ```js        
@@ -1337,15 +1124,10 @@ URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
     "version": "0.0.1"
 }
 ```
-
-
 
 ***More example Requests/Responses:***
 
-
 ##### I. Example Request: SPEAKER speaker (create)
-
-
 
 ***Body:***
 
@@ -1355,9 +1137,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
 }
 ```
 
-
-
 ##### I. Example Response: SPEAKER speaker (create)
+
 ```js
 {
     "id": 14,
@@ -1367,16 +1148,11 @@ URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
 }
 ```
 
-
 ***Status Code:*** 201
 
 <br>
 
-
-
 ##### II. Example Request: SPEAKER speaker (get)
-
-
 
 ***Body:***
 
@@ -1386,9 +1162,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
 }
 ```
 
-
-
 ##### II. Example Response: SPEAKER speaker (get)
+
 ```js
 {
     "id": 14,
@@ -1398,16 +1173,11 @@ URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
 }
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ##### III. Example Request: SPEAKER speaker (update)
-
-
 
 ***Body:***
 
@@ -1418,9 +1188,8 @@ URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
 }
 ```
 
-
-
 ##### III. Example Response: SPEAKER speaker (update)
+
 ```js
 {
     "id": 14,
@@ -1430,16 +1199,11 @@ URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
 }
 ```
 
-
 ***Status Code:*** 200
 
 <br>
 
-
-
 ##### IV. Example Request: SPEAKER speaker (delete)
-
-
 
 ***Body:***
 
@@ -1448,8 +1212,6 @@ URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
     "token": "{{token}}"
 }
 ```
-
-
 
 ***Status Code:*** 204
 
@@ -1464,8 +1226,6 @@ URL: http://127.0.0.1:8000/speaker/api/v1/speaker/
 | domain | 127.0.0.1:8000 |  |
 | api_key | $2y$10$EhnTCMUX3m1MdzJoPc5iQudhoLvZSyWPXV463/yH.EqC3qV9CSir2 |  |
 | token | e7a2O3JQDD6AbLk9zDDkw |  |
-
-
 
 ---
 [Back to top](#***REMOVED***)

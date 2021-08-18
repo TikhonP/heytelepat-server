@@ -9,8 +9,8 @@ class Firmware(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        if isinstance(version.parse(self.version), version.LegacyVersion):
-            raise ValidationError("Version is not valid, got `{}`".format(self.version))
+        if isinstance(version.parse(str(self.version)), version.LegacyVersion):
+            raise ValueError("Version is not valid, got `{}`".format(self.version))
 
         return super().save(*args, **kwargs)
 

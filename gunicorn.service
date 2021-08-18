@@ -1,18 +1,18 @@
 [Unit]
-Description=gunicorn daemon
-Requires=gunicorn.socket
-After=network.target
+Description = gunicorn daemon
+Requires = gunicorn.socket
+After = network.target
 
 [Service]
-User=***REMOVED***
-Group=www-data
-Environment=DJANGO_SETTINGS_MODULE=***REMOVED***.settings.production
-WorkingDirectory=/home/***REMOVED***/***REMOVED***-server
-ExecStart=/home/***REMOVED***/***REMOVED***-server/env/bin/gunicorn \
-          --access-logfile - \
-          --workers 3 \
-          --bind unix:/run/gunicorn.sock \
-          ***REMOVED***.wsgi:application
+User = ***REMOVED***
+Group = www-data
+Environment = DJANGO_SETTINGS_MODULE=***REMOVED***.settings.production
+WorkingDirectory = /home/***REMOVED***/***REMOVED***-server
+ExecStart = /home/***REMOVED***/***REMOVED***-server/env/bin/gunicorn \
+            --access-logfile - \
+            --workers 3 \
+            --bind unix:/run/gunicorn.sock \
+            ***REMOVED***.wsgi:application
 
 [Install]
-WantedBy=multi-user.target
+WantedBy = multi-user.target

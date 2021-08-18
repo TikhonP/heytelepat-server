@@ -59,10 +59,10 @@ class CheckFirmwareAPIView(GenericAPIView):
     def get(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if not (version := serializer.data.get('version')):
+        if not (current_version := serializer.data.get('current_version')):
             raise ValidationError(detail='`Version` required')
 
-        firmware = get_object_or_404(self.get_queryset(), version=version)
+        firmware = get_object_or_404(self.get_queryset(), version=current_version)
         out_serializer = serializers.FirmwareSerializer(firmware)
         return Response(out_serializer.data)
 
@@ -137,7 +137,8 @@ class SendMessageApiView(APIView):
 
         message = "Сообщение от пациента: " + message
         aac.send_message(
-            s.contract.contract_id, message, need_answer=True)
+            s.contract.contract_id, message, need_answer=True, send_from='patient'
+        )
         return Response(['ok'])
 
 
