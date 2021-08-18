@@ -137,7 +137,7 @@ class SendMessageApiView(APIView):
 
         message = "Сообщение от пациента: " + message
         aac.send_message(
-            s.contract.contract_id, message, need_answer=True, send_from='patient'
+            s.contract.contract_id, message, need_answer=True, send_from='patient',
         )
         return Response(['ok'])
 
