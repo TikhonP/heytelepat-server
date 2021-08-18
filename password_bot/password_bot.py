@@ -88,7 +88,7 @@ def generate_audio_file(ssid: str, psk: str) -> io.BytesIO:
 
     ogg_data = io.BytesIO()
     with wave.open(wav_data, 'rb') as wave_read:
-        opus_buffered_encoder = pyogg.opus_buffered_encoder.OpusBufferedEncoder()
+        opus_buffered_encoder = pyogg.OpusBufferedEncoder()
         opus_buffered_encoder.set_application("audio")
         opus_buffered_encoder.set_sampling_frequency(wave_read.getframerate())
         opus_buffered_encoder.set_channels(wave_read.getnchannels())
