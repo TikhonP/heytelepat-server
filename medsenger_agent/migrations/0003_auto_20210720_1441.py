@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('medsenger_agent', '0002_auto_20210720_1437'),
     ]

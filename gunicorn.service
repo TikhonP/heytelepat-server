@@ -1,18 +1,18 @@
 [Unit]
-Description=gunicorn daemon
-Requires=gunicorn.socket
-After=network.target
+Description = gunicorn daemon
+Requires = gunicorn.socket
+After = network.target
 
 [Service]
-User=tikhon
-Group=www-data
-Environment=DJANGO_SETTINGS_MODULE=heytelepat.settings.production
-WorkingDirectory=/home/tikhon/heytelepat-server
-ExecStart=/home/tikhon/heytelepat-server/env/bin/gunicorn \
-          --access-logfile - \
-          --workers 3 \
-          --bind unix:/run/gunicorn.sock \
-          heytelepat.wsgi:application
+User = tikhon
+Group = www-data
+Environment = DJANGO_SETTINGS_MODULE=heytelepat.settings.production
+WorkingDirectory = /home/tikhon/heytelepat-server
+ExecStart = /home/tikhon/heytelepat-server/env/bin/gunicorn \
+            --access-logfile - \
+            --workers 3 \
+            --bind unix:/run/gunicorn.sock \
+            heytelepat.wsgi:application
 
 [Install]
-WantedBy=multi-user.target
+WantedBy = multi-user.target

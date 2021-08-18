@@ -1,11 +1,11 @@
 import json
-import medsenger_api
 
+import medsenger_api
+from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from channels.db import database_sync_to_async
-
+from medsenger_agent import serializers as ma_serializers
 from medsenger_agent.models import (
     Speaker,
     Message,
@@ -13,7 +13,6 @@ from medsenger_agent.models import (
     MedicineTaskGeneric,
 )
 from speakerapi import serializers
-from medsenger_agent import serializers as ma_serializers
 
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
 

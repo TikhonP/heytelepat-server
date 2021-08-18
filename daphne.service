@@ -1,15 +1,14 @@
 [Unit]
-Description=WebSocket Daphne Service
-After=network.target
+Description = WebSocket Daphne Service
+After = network.target
 
 [Service]
-Environment=DJANGO_SETTINGS_MODULE=heytelepat.settings.production
-Type=simple
-User=root
-WorkingDirectory=/home/tikhon/heytelepat-server
-ExecStart=/home/tikhon/heytelepat-server/env/bin/python /home/tikhon/heytelepat-server/env/bin/daphne -b 0.0.0.0 -p 8001 heytelepat.asgi:application
-Restart=on-failure
+Environment = DJANGO_SETTINGS_MODULE=heytelepat.settings.production
+Type = simple
+User = root
+WorkingDirectory = /home/tikhon/heytelepat-server
+ExecStart = /home/tikhon/heytelepat-server/env/bin/python /home/tikhon/heytelepat-server/env/bin/daphne -b 0.0.0.0 -p 8001 heytelepat.asgi:application
+Restart = on-failure
 
 [Install]
-WantedBy=multi-user.target
-
+WantedBy = multi-user.target

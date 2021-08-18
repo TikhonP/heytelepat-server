@@ -1,21 +1,17 @@
 import json
-import datetime
+
 import medsenger_api
-
-from django.http import HttpResponse
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.conf import settings
-from django.shortcuts import render, get_object_or_404
 from django.core import exceptions
-from django.utils import timezone
-
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.response import Response
-
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 
 from medsenger_agent import serializers
 from medsenger_agent.models import (
@@ -26,7 +22,6 @@ from medsenger_agent.models import (
     MeasurementTaskGeneric,
     MedicineTaskGeneric,
 )
-
 from speakerapi.serializers import MessageSerializer
 
 APP_KEY = settings.APP_KEY
@@ -92,21 +87,21 @@ def settings(request):
         contract_id = request.GET.get('contract_id', '')
 
     else:
-        s_id = request.POST.get('speaker_id', '')
-        contract_id = request.POST.get('contract_id', '')
+        s_id = request.POST.get('speaker_id')
+        contract_id = request.POST.get('contract_id')
 
         speaker = Speaker.objects.get(pk=s_id)
         speaker.delete()
 
     speakers = Speaker.objects.filter(contract=Contract.objects.get(
-            contract_id=contract_id))
+        contract_id=contract_id))
 
     return render(request, "settings.html", {
-            "contract_id": contract_id,
-            "speakers": speakers,
-            "api_key": request.GET.get('api_key', ''),
-            "len_speakers": len(speakers),
-        })
+        "contract_id": contract_id,
+        "speakers": speakers,
+        "api_key": request.GET.get('api_key', ''),
+        "len_speakers": len(speakers),
+    })
 
 
 @csrf_exempt
@@ -118,6 +113,8 @@ def newdevice(request):
 
         return render(request, "newdevice.html", {
             "contract_id": request.GET.get('contract_id', ''),
+            "invalid_code": None,
+            "value": None
         })
 
     else:
@@ -171,11 +168,11 @@ class OrderApiView(GenericAPIView):
             )
 
             if serializer.data['order'] == 'form':
-                mtData = serializer.data['params'].copy()
-                mtData.pop('fields')
+                mt_data = serializer.data['params'].copy()
+                mt_data.pop('fields')
 
                 measurmenttask = MeasurementTask.objects.create(
-                    contract=contract, **mtData)
+                    contract=contract, **mt_data)
 
                 for field in serializer.data['params']['fields']:
                     mtg, create = MeasurementTaskGeneric.objects.get_or_create(

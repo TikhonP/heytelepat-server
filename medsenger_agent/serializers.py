@@ -1,7 +1,5 @@
 import medsenger_api
-
 from django.conf import settings
-
 from rest_framework import serializers
 
 from medsenger_agent.models import (
@@ -11,7 +9,6 @@ from medsenger_agent.models import (
     Contract,
     Message,
 )
-
 
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
 

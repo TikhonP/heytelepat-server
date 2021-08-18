@@ -26,13 +26,13 @@ class Speaker(models.Model):
             self.token = secrets.token_urlsafe(16)
             self.code = random.randint(100000, 999999)
 
-        if self.version != 'null' and isinstance(version.parse(self.version), version.LegacyVersion):
-            raise ValidationError("Version is not valid, got `{}`".format(self.version))
+        if self.version != 'null' and isinstance(version.parse(str(self.version)), version.LegacyVersion):
+            raise ValueError("Version is not valid, got `{}`".format(self.version))
 
         return super(Speaker, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "Speaker `{}` ({}) - {}".format(
+        return "Speaker `{}` - {}".format(
             self.version, self.id, self.contract)
 
 
