@@ -94,15 +94,15 @@ def generate_audio_file(ssid: str, psk: str) -> io.BytesIO:
         opus_buffered_encoder.set_channels(wave_read.getnchannels())
         opus_buffered_encoder.set_frame_size(20)
 
-        with pyogg.OggOpusWriter(ogg_data, opus_buffered_encoder) as ogg_opus_writer:
-            chunk_size = 1024
-
+        ogg_opus_writer = pyogg.OggOpusWriter(ogg_data, opus_buffered_encoder)
+        chunk_size = 1024
+        pcm = wave_read.readframes(chunk_size)
+        while len(pcm) != 0:
+            ogg_opus_writer.write(
+                memoryview(bytearray(pcm))
+            )
             pcm = wave_read.readframes(chunk_size)
-            while len(pcm) != 0:
-                ogg_opus_writer.write(
-                    memoryview(bytearray(pcm))
-                )
-                pcm = wave_read.readframes(chunk_size)
+        ogg_opus_writer.close()
 
     ogg_data.seek(0)
     return ogg_data
