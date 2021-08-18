@@ -9,7 +9,7 @@ User = ***REMOVED***
 
 Environment = TELEGRAM_TOKEN=1883863794:AAFy9xuTyU73f6yK70YnZIHkurg403Ddxkg
 
-ExecStart = env/bin/python password_bot.py
+ExecStart = /home/***REMOVED***/***REMOVED***-server/password_bot/env/bin/python password_bot.py
 Restart = on-failure
 
 [Install]
