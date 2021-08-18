@@ -7,7 +7,7 @@ ALLOWED_HOSTS = [
     'localhost',
 ]
 
-DOMEN = 'http://127.0.0.1:8000'
+DOMAIN = 'http://127.0.0.1:8000'
 
 CHANNEL_LAYERS = {
     "default": {

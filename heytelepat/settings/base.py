@@ -124,7 +124,7 @@ USE_TZ = True
 
 APP_KEY = "$2y$10$EhnTCMUX3m1MdzJoPc5iQudhoLvZSyWPXV463/yH.EqC3qV9CSir2"
 MAIN_HOST = "https://medsenger.ru"
-DOMEN = "http://telepatspeaker.ddns.net"
+DOMAIN = "http://telepatspeaker.ddns.net"
 
 APPEND_SLASH = False
 

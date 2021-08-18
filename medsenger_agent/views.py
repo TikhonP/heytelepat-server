@@ -25,7 +25,7 @@ from medsenger_agent.models import (
 from speakerapi.serializers import MessageSerializer
 
 APP_KEY = settings.APP_KEY
-DOMEN = settings.DOMEN
+DOMAIN = settings.DOMAIN
 context = {
     'status': '400', 'reason': 'invalid key'
 }
