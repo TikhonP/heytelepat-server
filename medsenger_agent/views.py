@@ -118,7 +118,7 @@ def newdevice(request):
         })
 
     else:
-        code = int(request.POST.get('code', 0))
+        code = int(request.POST.get('code', 0)) if request.POST.get('code', 0).isdigit() else 0
         contract_id = int(request.POST.get('contract_id', ''))
 
         try:
