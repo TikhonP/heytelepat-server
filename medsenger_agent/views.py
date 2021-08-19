@@ -7,7 +7,6 @@ from django.conf import settings
 from django.core import exceptions
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView, GenericAPIView
@@ -78,9 +77,9 @@ class StatusAPIView(GenericAPIView):
             return Response(data)
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(['GET', 'POST'])
 def settings(request):
-    if request.method == "GET":
+    if request.method == 'GET':
         if request.GET.get('api_key', '') != APP_KEY:
             return invalid_key_response
 
@@ -96,25 +95,24 @@ def settings(request):
     speakers = Speaker.objects.filter(contract=Contract.objects.get(
         contract_id=contract_id))
 
-    return render(request, "settings.html", {
-        "contract_id": contract_id,
-        "speakers": speakers,
-        "api_key": request.GET.get('api_key', ''),
-        "len_speakers": len(speakers),
+    return render(request, 'settings.html', {
+        'contract_id': contract_id,
+        'speakers': speakers,
+        'api_key': request.GET.get('api_key', ''),
+        'len_speakers': len(speakers),
+        'domain': DOMAIN
     })
 
 
-@csrf_exempt
-@require_http_methods(["GET", "POST"])
+@require_http_methods(['GET', 'POST'])
 def newdevice(request):
-    if request.method == "GET":
+    if request.method == 'GET':
         if request.GET.get('api_key', '') != APP_KEY:
             return invalid_key_response
-
-        return render(request, "newdevice.html", {
-            "contract_id": request.GET.get('contract_id', ''),
-            "invalid_code": None,
-            "value": None
+        return render(request, 'newdevice.html', {
+            'contract_id': request.GET.get('contract_id', ''),
+            'invalid_code': None,
+            'value': None,
         })
 
     else:
@@ -124,10 +122,10 @@ def newdevice(request):
         try:
             speaker = Speaker.objects.get(code=code)
         except exceptions.ObjectDoesNotExist:
-            return render(request, "newdevice.html", {
-                "contract_id": contract_id,
-                "invalid_code": True,
-                "value": code,
+            return render(request, 'newdevice.html', {
+                'contract_id': contract_id,
+                'invalid_code': True,
+                'value': code,
             })
 
         try:
@@ -135,7 +133,7 @@ def newdevice(request):
         except exceptions.ObjectDoesNotExist:
             response = HttpResponse(json.dumps({
                 'status': 500,
-                'reason': 'Contract doesnot exist please reconnect agent',
+                'reason': 'Contract does not exist please reconnect agent',
             }), content_type='application/json')
             response.status_code = 500
             return response

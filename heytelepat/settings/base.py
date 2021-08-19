@@ -128,7 +128,9 @@ DOMAIN = "http://telepatspeaker.ddns.net"
 
 APPEND_SLASH = False
 
-X_FRAME_OPTIONS = 'ALLOWALL'
+X_FRAME_OPTIONS = 'ALLOW-FROM medsenger.ru'
+CSRF_TRUSTED_ORIGINS = ['medsenger.ru']
+CSRF_COOKIE_SAMESITE = None
 XS_SHARING_ALLOWED_METHODS = ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE']
 
 STATIC_URL = '/static/'
