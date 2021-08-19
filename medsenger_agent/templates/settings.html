@@ -9,7 +9,8 @@
     {% for i in speakers %}
     <div class="card">
         <div class="card-body">
-            <p class="card-text">Колонка, код - {{ i.code }}</p>
+            <p class="card-text">Колонка ({{ i.id }}) [{{ i.version }}]</p>
+            <p class="card-text">Contract ID: {{ contract_id }}</p>
             <form method="post">
                 {% csrf_token %}
                 <input name="speaker_id" type="hidden" value="{{ i.pk }}"/>
@@ -23,7 +24,7 @@
     {% endfor %}
     {% endif %}
     <a class="btn btn-primary"
-       href="{% url 'medsenger-newdevice' %}?contract_id={{ contract_id|urlencode }}&api_key={{ api_key|urlencode }}">Добавить
+       href="{{ domain }}{% url 'medsenger-newdevice' %}?contract_id={{ contract_id|urlencode }}&api_key={{ api_key|urlencode }}">Добавить
         колонку</a>
     <div class="d-grid gap-2 mt-2 col-6 mx-auto">
         <button class="btn btn-outline-secondary" onclick="window.parent.postMessage('close-modal-success','*');"
