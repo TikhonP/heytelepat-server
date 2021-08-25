@@ -11,6 +11,7 @@ import django
 
 django.setup()
 
+# noinspection PyPep8
 from django.core.asgi import get_asgi_application
 from speakerapi.routing import ws_urlpatterns
 from channels.auth import AuthMiddlewareStack

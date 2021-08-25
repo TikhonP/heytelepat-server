@@ -68,6 +68,7 @@ class TaskModelSerializer(serializers.ModelSerializer):
         exclude = ('date',)
 
 
+# noinspection PyAbstractClass
 class TaskSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
         request = kwargs.get('context', {}).get('request')

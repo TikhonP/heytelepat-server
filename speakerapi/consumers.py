@@ -18,8 +18,9 @@ aac = medsenger_api.AgentApiClient(settings.APP_KEY)
 
 
 class WaitForAuthConsumer(AsyncJsonWebsocketConsumer):
+    room_group_name = None
+
     async def connect(self):
-        self.room_group_name = None
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -70,8 +71,9 @@ class WaitForAuthConsumer(AsyncJsonWebsocketConsumer):
 
 
 class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
+    room_group_name = None
+
     async def connect(self):
-        self.room_group_name = None
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -170,9 +172,9 @@ class IncomingMessageNotifyConsumer(AsyncJsonWebsocketConsumer):
 class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
     serializer = serializers.IncomingMeasurementNotify
     out_serializer = ma_serializers.TaskModelSerializer
+    room_group_name = None
 
     async def connect(self):
-        self.room_group_name = None
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -281,10 +283,10 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
 class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
     serializer = serializers.IncomingMeasurementNotify
     out_serializer = ma_serializers.MedicineGenericSerializer
+    room_group_name = None
+    inited = False
 
     async def connect(self):
-        self.room_group_name = None
-        self.inited = False
         await self.accept()
 
     async def disconnect(self, close_code):

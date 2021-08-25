@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('medsenger/', include('medsenger_agent.urls')),
     path('speaker/api/v1/', include('speakerapi.urls')),
+    path('mobile/api/v1/', include('mobile_api.urls')),
 ]
 
 if settings.DEBUG:
