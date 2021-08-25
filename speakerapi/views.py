@@ -213,6 +213,7 @@ class GetListOfAllCategories(APIView):
 class MeasurementListAPIView(GenericAPIView):
     queryset = MeasurementTask.objects.all()
     serializer_class = serializers.IncomingMeasurementNotify
+    s = None
 
     def get(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -227,6 +228,7 @@ class MeasurementListAPIView(GenericAPIView):
             self.get_queryset(), many=True)
         return Response(out_serializer.data)
 
+    # noinspection PyMethodMayBeStatic
     def post(self, request):
         serializer = serializers.SendValueSerializer(data=request.data)
 
@@ -283,6 +285,7 @@ class MeasurementListAPIView(GenericAPIView):
 class MedicineListAPIView(GenericAPIView):
     queryset = MedicineTaskGeneric.objects.all()
     serializer_class = serializers.IncomingMeasurementNotify
+    s = None
 
     def get(self, request):
         serializer = self.get_serializer(data=request.data)

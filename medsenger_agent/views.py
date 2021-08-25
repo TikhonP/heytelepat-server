@@ -169,13 +169,13 @@ class OrderApiView(GenericAPIView):
                 mt_data = serializer.data['params'].copy()
                 mt_data.pop('fields')
 
-                measurmenttask = MeasurementTask.objects.create(
+                measurement_task = MeasurementTask.objects.create(
                     contract=contract, **mt_data)
 
                 for field in serializer.data['params']['fields']:
                     mtg, create = MeasurementTaskGeneric.objects.get_or_create(
                         value_type=field.pop('type'), **field)
-                    measurmenttask.fields.add(mtg)
+                    measurement_task.fields.add(mtg)
 
                 channel_layer = get_channel_layer()
                 async_to_sync(channel_layer.group_send)(
@@ -183,7 +183,7 @@ class OrderApiView(GenericAPIView):
                     {
                         'type': 'receive_measurements',
                         'data': serializers.TaskModelSerializer(
-                            measurmenttask).data
+                            measurement_task).data
                     }
                 )
 
