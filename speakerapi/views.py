@@ -17,6 +17,18 @@ from speakerapi.models import Firmware
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
 
 
+class InitSpeakerAPIView(GenericAPIView):
+    serializer_class = serializers.InitSpeakerSerializer
+    queryset = Speaker.objects.all()
+
+    def get(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        speaker = get_object_or_404(self.get_queryset(), code=serializer.data.get('code'))
+        return Response({'token': speaker.token})
+
+
 class SpeakerAPIView(CreateAPIView, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin):
     serializer_class = serializers.SpeakerSerializer
     queryset = Speaker.objects.all()

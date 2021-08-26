@@ -4,6 +4,10 @@ from medsenger_agent.models import Message, Speaker
 from speakerapi.models import Firmware
 
 
+class InitSpeakerSerializer(serializers.Serializer):
+    code = serializers.IntegerField()
+
+
 class FirmwareSerializer(serializers.ModelSerializer):
     class Meta:
         model = Firmware

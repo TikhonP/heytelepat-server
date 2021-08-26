@@ -4,6 +4,7 @@ from speakerapi import views
 
 urlpatterns = [
     path('speaker/', views.SpeakerAPIView.as_view(), name='speakerapi-speaker'),
+    path('speaker/init/', views.InitSpeakerAPIView.as_view(), name='speakerapi-speaker-init'),
     path('message/', views.IncomingMessageNotifyApiView.as_view(), name='speakerapi-message-list'),
     path('message/send/', views.SendMessageApiView.as_view(), name='speakerapi-message-send'),
     path('measurement/', views.MeasurementListAPIView.as_view(), name='speakerapi-measurement'),
