@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core import exceptions
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView, GenericAPIView
@@ -77,6 +78,7 @@ class StatusAPIView(GenericAPIView):
             return Response(data)
 
 
+@csrf_exempt
 @require_http_methods(['GET', 'POST'])
 def settings(request):
     if request.method == 'GET':
@@ -104,6 +106,7 @@ def settings(request):
     })
 
 
+@csrf_exempt
 @require_http_methods(['GET', 'POST'])
 def newdevice(request):
     if request.method == 'GET':
