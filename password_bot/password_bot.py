@@ -76,10 +76,10 @@ def get_ssid(update: Update, _: CallbackContext) -> int:
     return PASS
 
 
-def generate_audio_file(ssid: str, psk: str) -> io.BytesIO:
+def generate_audio_file(ssid: str, psk: str, code: int) -> io.BytesIO:
     """Generate audio encoding ogg opus file."""
 
-    data_to_encode = json.dumps({'ssid': ssid, 'psk': psk})
+    data_to_encode = json.dumps({'ssid': ssid, 'psk': psk, 'code': code})
     waveform = ggwave.encode(data_to_encode, txProtocolId=2, volume=20)
 
     wav_data = io.BytesIO()
