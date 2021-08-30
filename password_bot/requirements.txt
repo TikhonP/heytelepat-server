@@ -1,4 +1,4 @@
 python-telegram-bot~=13.7
 ggwave~=0.3.0
-git+https://github.com/TeamPyOgg/PyOgg.git
+pyogg
 SoundFile==0.10.3.post1
