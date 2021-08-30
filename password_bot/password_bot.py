@@ -12,21 +12,24 @@ from pathlib import Path
 
 import ggwave
 import pyogg
+import requests
 import soundfile
-from telegram import Update
+from telegram import Update, ReplyKeyboardRemove
 from telegram.ext import (
     Updater,
     CommandHandler,
     MessageHandler,
     Filters,
     CallbackContext,
-    ConversationHandler
+    ConversationHandler,
 )
 
 TOKEN = os.environ.get('TELEGRAM_TOKEN')
 DATA = {}
-SSID, PASS = range(2)
+SSID, PASS, CONTRACT = range(3)
 BASE_DIR = Path(__file__).resolve().parent
+MEDSENGER_API_TOKEN = "$2y$10$EhnTCMUX3m1MdzJoPc5iQudhoLvZSyWPXV463/yH.EqC3qV9CSir2"
+HEYTELEPAT_SERVER_DOMAIN = "http://194.87.234.236"
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -109,16 +112,14 @@ def generate_audio_file(ssid: str, psk: str) -> io.BytesIO:
 
 
 def get_password(update: Update, _: CallbackContext) -> int:
-    """Handle password from user input and send voice."""
+    """Handle password from user input."""
 
     user = update.message.from_user
     logger.info("Password of %s: %s", user.first_name, '*' * len(update.message.text))
     DATA[user.id]['psk'] = update.message.text
-    data = generate_audio_file(**DATA[user.id])
+    update.message.reply_text("Введите contract id.")
 
-    update.message.reply_voice(data)
-
-    return ConversationHandler.END
+    return CONTRACT
 
 
 def cancel(update: Update, _: CallbackContext) -> int:
@@ -129,6 +130,35 @@ def cancel(update: Update, _: CallbackContext) -> int:
     update.message.reply_text(
         "Отменено.", reply_markup=ReplyKeyboardRemove()
     )
+
+    return ConversationHandler.END
+
+
+def get_contract(update: Update, _: CallbackContext) -> int:
+    """Handle contract from user input and send voice."""
+
+    user = update.message.from_user
+    logger.info("Contract of %s: %s", user.first_name, update.message.text)
+    if not update.message.text.isdigit():
+        update.message.reply_text("Неверный contract id, укажите валидное число.")
+        return CONTRACT
+    contract = int(update.message.text)
+
+    message = update.message.reply_text("Генерация аудиокода...")
+
+    url = HEYTELEPAT_SERVER_DOMAIN + '/mobile/api/v1/speaker/'
+    answer = requests.post(url, json={
+        'api_token': MEDSENGER_API_TOKEN, 'contract': contract
+    })
+    if not answer.ok:
+        update.message.reply_text("Ошибка соединения с сервером.")
+        logger.error("Ошибка соединения с сервером: {} {}".format(answer.status_code, answer.text))
+
+    DATA[user.id]['code'] = answer.json().get('code')
+    data = generate_audio_file(**DATA[user.id])
+
+    update.message.reply_voice(data)
+    message.delete()
 
     return ConversationHandler.END
 
@@ -146,7 +176,8 @@ def main() -> None:
         entry_points=[CommandHandler('generate', generate)],
         states={
             SSID: [MessageHandler(Filters.text, get_ssid)],
-            PASS: [MessageHandler(Filters.text, get_password)]
+            PASS: [MessageHandler(Filters.text, get_password)],
+            CONTRACT: [MessageHandler(Filters.text, get_contract)],
         },
         fallbacks=[CommandHandler('cancel', cancel)],
     )
