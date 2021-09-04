@@ -26,6 +26,9 @@ class InitSpeakerAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         speaker = get_object_or_404(self.get_queryset(), code=serializer.data.get('code'))
+        contract = speaker.contract
+        contract.speaker_active = True
+        contract.save()
         return Response({'token': speaker.token})
 
 
