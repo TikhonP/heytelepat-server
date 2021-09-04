@@ -133,7 +133,7 @@ def newdevice(request):
 
         try:
             contract = Contract.objects.get(contract_id=contract_id)
-        except exceptions.ObjectDoesNotExist:
+        except exceptions.w:
             response = HttpResponse(json.dumps({
                 'status': 500,
                 'reason': 'Contract does not exist please reconnect agent',
