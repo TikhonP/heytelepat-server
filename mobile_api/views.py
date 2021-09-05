@@ -43,7 +43,7 @@ class CreateNewSpeakerAPIView(GenericAPIView):
         speaker = Speaker.objects.create(contract=contract)
         return Response({'code': speaker.code})
 
-    def get(self, request):
+    def put(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         contract = validate_api_key(**serializer.data)
