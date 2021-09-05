@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from medsenger_agent.models import Speaker, Contract
 from mobile_api import serializers
+from mobile_api.models import MedsengerApiToken
 from speakerapi.serializers import SpeakerSerializer
 
 
@@ -13,8 +14,8 @@ def validate_api_key(api_token: str, contract: int) -> Contract:
     """Validate medsenger api_key with medsenger request."""
 
     try:
-        return Contract.objects.get(api_key=api_token)
-    except Contract.DoesNotExist:
+        return MedsengerApiToken.objects.get(token=api_token).contract
+    except MedsengerApiToken.DoesNotExist:
         url = settings.MAIN_HOST + '/api/client/doctors'
         answer = requests.get(url, params={'api_token': api_token})
         if not answer.ok or answer.json()['state'] != 'success':
@@ -25,7 +26,11 @@ def validate_api_key(api_token: str, contract: int) -> Contract:
         if contract not in contracts:
             raise ValidationError("Invalid api_token for given contract")
 
-        return Contract.objects.create(api_key=api_token, contract_id=contract)
+        contract_obj, _ = Contract.objects.get_or_create(contract_id=contract)
+        MedsengerApiToken.objects.create(
+            token=api_token, contract=contract_obj
+        )
+        return contract_obj
 
 
 class CreateNewSpeakerAPIView(GenericAPIView):

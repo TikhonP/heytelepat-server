@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'channels',
     'medsenger_agent',
     'speakerapi',
+    'mobile_api',
     'rest_framework',
 ]
 
