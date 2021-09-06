@@ -8,6 +8,7 @@ from packaging import version
 class Contract(models.Model):
     contract_id = models.IntegerField(unique=True, primary_key=True)
     speaker_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return "Contract id - {}".format(self.contract_id)

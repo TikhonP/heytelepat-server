@@ -50,15 +50,16 @@ class RemoveContractAPIView(GenericAPIView):
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        if serializer.is_valid(raise_exception=True):
-            instance = get_object_or_404(
-                self.get_queryset(),
-                contract_id=serializer.data['contract_id']
-            )
-            instance.delete()
+        instance = get_object_or_404(
+            self.get_queryset(),
+            contract_id=serializer.data['contract_id']
+        )
+        instance.is_active = False
+        instance.save()
 
-            return HttpResponse('ok')
+        return HttpResponse('ok')
 
 
 class StatusAPIView(GenericAPIView):
@@ -67,15 +68,16 @@ class StatusAPIView(GenericAPIView):
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        if serializer.is_valid(raise_exception=True):
-            data = {
-                'is_tracking_data': True,
-                'supported_scenarios': [],
-                'tracked_contracts': [
-                    i.contract_id for i in self.get_queryset()]
-            }
-            return Response(data)
+        data = {
+            'is_tracking_data': True,
+            'supported_scenarios': [],
+            'tracked_contracts': [
+                i.contract_id for i in self.get_queryset().filter(is_active=True)
+            ]
+        }
+        return Response(data)
 
 
 @csrf_exempt
