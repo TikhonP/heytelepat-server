@@ -116,17 +116,12 @@ class ContractCreateSerializer(serializers.Serializer):
     contract_id = serializers.IntegerField()
 
     def save(self):
-        aac.send_message(
-            self.validated_data['contract_id'],
-            "Зарегистрируйте новое устройство",
-            "newdevice", "Добавить", only_patient=True, action_big=True)
+        instance, created = Contract.objects.get_or_create(contract_id=self.validated_data.get('contract_id'))
+        if not created:
+            instance.is_active = True
+            instance.save()
 
-        try:
-            return Contract.objects.get(
-                contract_id=self.validated_data['contract_id'])
-        except Contract.DoesNotExist:
-            return Contract.objects.create(
-                contract_id=self.validated_data['contract_id'])
+        return instance
 
 
 class ContractRemoveSerializer(serializers.Serializer):
