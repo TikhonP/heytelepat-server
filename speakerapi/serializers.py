@@ -1,7 +1,18 @@
 from rest_framework import serializers
 
 from medsenger_agent.models import Message, Speaker
-from speakerapi.models import Firmware
+from speakerapi.models import Firmware, SpeakerException
+
+
+class CreateSpeakerExceptionSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    traceback = serializers.CharField()
+
+
+class SpeakerExceptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SpeakerException
+        fields = '__all__'
 
 
 class InitSpeakerSerializer(serializers.Serializer):
@@ -84,3 +95,4 @@ class IncomingMeasurementNotify(serializers.Serializer):
 class GetListOfAllCategories(serializers.Serializer):
     token = serializers.CharField()
     names_only = serializers.BooleanField()
+
