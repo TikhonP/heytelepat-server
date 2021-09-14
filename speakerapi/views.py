@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from medsenger_agent.models import Speaker, Message, MeasurementTask, MedicineTaskGeneric
 from medsenger_agent.serializers import TaskModelSerializer, MedicineGenericSerializer
 from speakerapi import serializers
-from speakerapi.models import Firmware
+from speakerapi.models import Firmware, SpeakerException
 
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
 
@@ -341,3 +341,21 @@ class MedicineListAPIView(GenericAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(contract=self.s.contract, is_done=False)
+
+
+class SpeakerExceptionAPIView(GenericAPIView):
+    serializer_class = serializers.CreateSpeakerExceptionSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            speaker = Speaker.objects.get(token=serializer.data['token'])
+        except Speaker.DoesNotExist:
+            raise ValidationError(detail='Invalid Token')
+
+        exception = SpeakerException.objects.create(speaker=speaker, traceback=serializer.data.get('traceback'))
+        out_serializer = serializers.SpeakerExceptionSerializer(exception)
+
+        return Response(out_serializer.data)

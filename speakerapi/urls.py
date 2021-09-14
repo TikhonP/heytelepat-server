@@ -14,4 +14,5 @@ urlpatterns = [
     path('medicine/', views.MedicineListAPIView.as_view(), name='speakerapi-medicine'),
     path('medicine/commit/', views.CommitMedicineApiView.as_view(), name='speakerapi-medicine-commit'),
     path('firmware/', views.CheckFirmwareAPIView.as_view(), name='speakerapi-firmware'),
+    path('exception/', views.SpeakerExceptionAPIView.as_view(), name='speakerapi-exception'),
 ]
