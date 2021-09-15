@@ -74,7 +74,7 @@ class CheckFirmwareAPIView(GenericAPIView):
     def get(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if not (current_version := serializer.data.get('current_version')):
+        if not (current_version := serializer.data.get('version')):
             raise ValidationError(detail='`Version` required')
 
         firmware = get_object_or_404(self.get_queryset(), version=current_version)
