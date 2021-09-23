@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'speakerapi',
     'mobile_api',
     'rest_framework',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
