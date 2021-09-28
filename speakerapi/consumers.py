@@ -1,9 +1,11 @@
+import datetime
 import json
 
 import medsenger_api
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
+from django.utils.timezone import now
 
 from medsenger_agent import serializers as ma_serializers
 from medsenger_agent.models import (
@@ -187,9 +189,9 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
     async def first_init(self, content, **kwargs):
         measurement = None
         try:
-            m = await database_sync_to_async(
-                MeasurementTask.objects.filter)(
-                contract=kwargs['s'].contract, is_sent=False)
+            m = await database_sync_to_async(MeasurementTask.objects.filter)(
+                contract=kwargs['s'].contract, is_sent=False, date__gt=(now()-datetime.timedelta(days=1))
+            )
             m = await database_sync_to_async(
                 m.prefetch_related)('fields')
             measurement = await database_sync_to_async(
@@ -299,11 +301,10 @@ class MedicineNotifyConsumer(AsyncJsonWebsocketConsumer):
     async def first_init(self, content, **kwargs):
         medicine = None
         try:
-            m = await database_sync_to_async(
-                MedicineTaskGeneric.objects.filter)(
-                contract=kwargs['s'].contract, is_sent=False)
-            medicine = await database_sync_to_async(
-                m.earliest)('date')
+            m = await database_sync_to_async(MedicineTaskGeneric.objects.filter)(
+                contract=kwargs['s'].contract, is_sent=False, date__gt=(now()-datetime.timedelta(days=1))
+            )
+            medicine = await database_sync_to_async(m.earliest)('date')
         except MedicineTaskGeneric.DoesNotExist:
             pass
 
