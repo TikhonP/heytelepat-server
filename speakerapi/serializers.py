@@ -95,4 +95,3 @@ class IncomingMeasurementNotify(serializers.Serializer):
 class GetListOfAllCategories(serializers.Serializer):
     token = serializers.CharField()
     names_only = serializers.BooleanField()
-

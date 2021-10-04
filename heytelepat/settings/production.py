@@ -1,13 +1,13 @@
 from .base import *
 
-
 DEBUG = False
 
 ALLOWED_HOSTS = [
     '194.87.234.236',
+    'speaker.medsenger.ru',
 ]
 
-DOMAIN = 'http://194.87.234.236'
+DOMAIN = 'https://speaker.medsenger.ru'
 
 CHANNEL_LAYERS = {
     "default": {

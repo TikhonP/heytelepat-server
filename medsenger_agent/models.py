@@ -57,7 +57,7 @@ class MedicineTaskGeneric(models.Model):
     rules = models.TextField()
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
 
-    date = models.DateTimeField(auto_now_add=True, blank=True)
+    date = models.DateTimeField(auto_now=True, blank=True)
 
     is_sent = models.BooleanField(default=False)
     is_done = models.BooleanField(default=False)
@@ -73,12 +73,13 @@ class MeasurementTask(models.Model):
     patient_description = models.TextField(null=True, default=None)
     thanks_text = models.TextField(null=True, default=None)
     custom_text = models.TextField(null=True, default=None)
+    medsenger_id = models.IntegerField(default=0)
     fields = models.ManyToManyField(MeasurementTaskGeneric)
 
     is_sent = models.BooleanField(default=False)
     is_done = models.BooleanField(default=False)
 
-    date = models.DateTimeField(auto_now_add=True, blank=True)
+    date = models.DateTimeField(auto_now=True, blank=True)
 
     def __str__(self):
         return "Measurement ({}) - {}".format(self.id, self.title)

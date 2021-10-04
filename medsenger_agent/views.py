@@ -4,9 +4,9 @@ import medsenger_api
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.conf import settings
-from django.core import exceptions
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from rest_framework.exceptions import ValidationError
@@ -126,7 +126,7 @@ def newdevice(request):
 
         try:
             speaker = Speaker.objects.get(code=code)
-        except exceptions.ObjectDoesNotExist:
+        except Speaker.DoesNotExist:
             return render(request, 'newdevice.html', {
                 'contract_id': contract_id,
                 'invalid_code': True,
@@ -135,7 +135,7 @@ def newdevice(request):
 
         try:
             contract = Contract.objects.get(contract_id=contract_id)
-        except exceptions.w:
+        except Contract.DoesNotExist:
             response = HttpResponse(json.dumps({
                 'status': 500,
                 'reason': 'Contract does not exist please reconnect agent',
@@ -174,13 +174,16 @@ class OrderApiView(GenericAPIView):
                 mt_data = serializer.data['params'].copy()
                 mt_data.pop('fields')
 
-                measurement_task = MeasurementTask.objects.create(
-                    contract=contract, **mt_data)
+                measurement_task, created = MeasurementTask.objects.get_or_create(contract=contract, **mt_data)
 
-                for field in serializer.data['params']['fields']:
-                    mtg, create = MeasurementTaskGeneric.objects.get_or_create(
-                        value_type=field.pop('type'), **field)
-                    measurement_task.fields.add(mtg)
+                if created:
+                    for field in serializer.data['params']['fields']:
+                        mtg, _ = MeasurementTaskGeneric.objects.get_or_create(
+                            value_type=field.pop('type'), **field)
+                        measurement_task.fields.add(mtg)
+                else:
+                    measurement_task.date = timezone.now()
+                    measurement_task.save()
 
                 channel_layer = get_channel_layer()
                 async_to_sync(channel_layer.group_send)(
@@ -194,11 +197,14 @@ class OrderApiView(GenericAPIView):
 
                 return HttpResponse('ok')
             elif serializer.data['order'] == 'medicine':
-                m = MedicineTaskGeneric.objects.create(
+                m, created = MedicineTaskGeneric.objects.get_or_create(
                     contract=contract,
                     medsenger_id=serializer.data['params'].pop('id'),
                     **serializer.data['params']
                 )
+                if not created:
+                    m.date = timezone.now()
+                    m.save()
 
                 out_serializer = serializers.MedicineGenericSerializer(m)
                 channel_layer = get_channel_layer()
