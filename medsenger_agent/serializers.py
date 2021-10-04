@@ -47,8 +47,7 @@ class MedicineGenericSerializer(serializers.ModelSerializer):
 
         super().__init__(*args, **kwargs)
         if request is not None:
-            self.fields['id'] = serializers.IntegerField(
-                source='medsenger_id', )
+            self.fields['id'] = serializers.IntegerField(source='medsenger_id')
 
     contract = serializers.ReadOnlyField(
         source='contract_id', )
@@ -59,6 +58,14 @@ class MedicineGenericSerializer(serializers.ModelSerializer):
 
 
 class TaskModelSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        request = kwargs.get('context', {}).get('request')
+
+        super().__init__(*args, **kwargs)
+
+        if request and request.META.get('REQUEST_METHOD') == 'POST':
+            self.fields['id'] = serializers.IntegerField(source='medsenger_id')
+
     contract = serializers.ReadOnlyField(
         source='contract_id', )
     fields = TaskGenericSerializer(many=True)

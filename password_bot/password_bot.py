@@ -29,7 +29,7 @@ DATA = {}
 SSID, PASS, CONTRACT = range(3)
 BASE_DIR = Path(__file__).resolve().parent
 MEDSENGER_API_TOKEN = "$2y$10$EhnTCMUX3m1MdzJoPc5iQudhoLvZSyWPXV463/yH.EqC3qV9CSir2"
-HEYTELEPAT_SERVER_DOMAIN = "http://194.87.234.236"
+HEYTELEPAT_SERVER_DOMAIN = "https://speaker.medsenger.ru"
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO

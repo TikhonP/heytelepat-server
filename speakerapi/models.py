@@ -1,5 +1,6 @@
 from django.db import models
 from packaging import version
+
 from medsenger_agent.models import Speaker
 
 

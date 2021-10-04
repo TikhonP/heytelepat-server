@@ -1,35 +1,36 @@
 {% extends 'iframe_base.html' %}
 
 {% block body %}
-<div class="d-grid gap-2 col-6 mx-auto">
-    <h4 class="mb-3 mt-3">Настройки агента умных колонок</h4>
-    {% if len_speakers is 0 %}
-    <p>Вы не добавили ни одной умной колонки</p>
-    {% else %}
-    {% for i in speakers %}
-    <div class="card">
-        <div class="card-body">
-            <p class="card-text">Колонка ({{ i.id }}) [{{ i.version }}]</p>
-            <p class="card-text">Contract ID: {{ contract_id }}</p>
-            <form method="post">
-                {% csrf_token %}
-                <input name="speaker_id" type="hidden" value="{{ i.pk }}"/>
-                <input name="contract_id" type="hidden" value="{{ contract_id }}"/>
-                <div class="d-grid gap-2 col-6 mx-auto">
-                    <input class="btn btn-primary" type="submit" value="Удалить"/>
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <h4 class="mb-3 mt-3">Настройки агента умных колонок</h4>
+        {% if len_speakers is 0 %}
+            <p>Вы не добавили ни одной умной колонки</p>
+        {% else %}
+            {% for i in speakers %}
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">Колонка ({{ i.id }}) [{{ i.version }}]</p>
+                        <p class="card-text">Contract ID: {{ contract_id }}</p>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input name="speaker_id" type="hidden" value="{{ i.pk }}"/>
+                            <input name="contract_id" type="hidden" value="{{ contract_id }}"/>
+                            <div class="d-grid gap-2 col-6 mx-auto">
+                                <input class="btn btn-primary" type="submit" value="Удалить"/>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </form>
+            {% endfor %}
+        {% endif %}
+        <a class="btn btn-primary"
+           href="
+                   {{ domain }}{% url 'medsenger-newdevice' %}?contract_id={{ contract_id|urlencode }}&api_key={{ api_key|urlencode }}">Добавить
+            колонку</a>
+        <div class="d-grid gap-2 mt-2 col-6 mx-auto">
+            <button class="btn btn-outline-secondary" onclick="window.parent.postMessage('close-modal-success','*');"
+                    type="button">Закрыть
+            </button>
         </div>
     </div>
-    {% endfor %}
-    {% endif %}
-    <a class="btn btn-primary"
-       href="{{ domain }}{% url 'medsenger-newdevice' %}?contract_id={{ contract_id|urlencode }}&api_key={{ api_key|urlencode }}">Добавить
-        колонку</a>
-    <div class="d-grid gap-2 mt-2 col-6 mx-auto">
-        <button class="btn btn-outline-secondary" onclick="window.parent.postMessage('close-modal-success','*');"
-                type="button">Закрыть
-        </button>
-    </div>
-</div>
 {% endblock %}
