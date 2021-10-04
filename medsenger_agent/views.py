@@ -183,6 +183,8 @@ class OrderApiView(GenericAPIView):
                         measurement_task.fields.add(mtg)
                 else:
                     measurement_task.date = timezone.now()
+                    measurement_task.is_sent = False
+                    measurement_task.is_done = False
                     measurement_task.save()
 
                 channel_layer = get_channel_layer()
@@ -204,6 +206,8 @@ class OrderApiView(GenericAPIView):
                 )
                 if not created:
                     m.date = timezone.now()
+                    m.is_sent = False
+                    m.is_done = False
                     m.save()
 
                 out_serializer = serializers.MedicineGenericSerializer(m)
