@@ -18,6 +18,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+admin.site.site_header = 'HeyTelepat administration'
+admin.site.site_title = 'Heytelepat site admin'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('medsenger/', include('medsenger_agent.urls')),
