@@ -2,8 +2,17 @@ from django.contrib import admin
 
 from medsenger_agent import models
 
-admin.site.register(models.Contract)
-admin.site.register(models.Speaker)
+
+@admin.register(models.Contract)
+class ContractAdmin(admin.ModelAdmin):
+    list_display = ('contract_id', 'speaker_active', 'is_active')
+
+
+@admin.register(models.Speaker)
+class SpeakerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'contract', 'version')
+
+
 admin.site.register(models.Message)
 admin.site.register(models.MeasurementTask)
 admin.site.register(models.MeasurementTaskGeneric)
