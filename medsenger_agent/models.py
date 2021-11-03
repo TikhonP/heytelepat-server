@@ -1,6 +1,7 @@
 import random
 import secrets
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from packaging import version
 
@@ -21,6 +22,19 @@ class Speaker(models.Model):
         Contract, null=True, default=None, on_delete=models.CASCADE)
     version = models.CharField(default='null', max_length=13)
 
+    serial_no = models.CharField(
+        "the serial number of speaker",
+        max_length=10,
+        null=True,
+        default=None,
+        blank=True,
+        unique=True
+    )
+    user = models.ForeignKey(
+        get_user_model(), on_delete=models.SET_NULL, null=True, blank=True,
+        default=None, verbose_name="the related user for staff issues",
+    )
+
     def save(self, *args, **kwargs):
         if not self.pk:
             print("Creating new speaker")
@@ -33,8 +47,7 @@ class Speaker(models.Model):
         return super(Speaker, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "Speaker `{}` - {}".format(
-            self.version, self.id, self.contract)
+        return f"Speaker {self.serial_no} ({self.id})"
 
 
 class MeasurementTaskGeneric(models.Model):

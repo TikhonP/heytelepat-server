@@ -189,7 +189,7 @@ class MeasurementNotifyConsumer(AsyncJsonWebsocketConsumer):
     async def first_init(self, content, **kwargs):
         measurement = None
         try:
-            time_threshold = now()-datetime.timedelta(hours=12)
+            time_threshold = now() - datetime.timedelta(hours=12)
             m = await database_sync_to_async(MeasurementTask.objects.filter)(
                 contract=kwargs['s'].contract, is_sent=False, date__gt=time_threshold
             )

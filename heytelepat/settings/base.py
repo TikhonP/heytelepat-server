@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'mobile_api',
     'rest_framework',
     'django_cleanup.apps.CleanupConfig',
+    'staff',
 ]
 
 MIDDLEWARE = [

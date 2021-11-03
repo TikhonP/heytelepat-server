@@ -43,7 +43,7 @@ class SpeakerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Speaker
-        exclude = ('contract',)
+        exclude = ('contract', 'user')
 
 
 class MessageSerializer(serializers.ModelSerializer):
