@@ -17,7 +17,7 @@ def publish_issue_to_slack(issue: Issue):
     client = WebClient(token=settings.SLACK_TOKEN)
 
     text = f"""Добавлена новая проблема с колонкой от *{issue.author.first_name}*:
-{issue.description} <http://{settings.DOMAIN}{issue.log_file.url}|Скачать лог>
+{issue.description} <{settings.DOMAIN}{issue.log_file.url}|Скачать лог>
 """
 
     try:
