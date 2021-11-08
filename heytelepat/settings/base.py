@@ -143,4 +143,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 SLACK_TOKEN = '***REMOVED***'
-SLACK_CHANNEL_ID = 'C02LBCRVB46'
+SLACK_CHANNEL_ID = '***REMOVED***'
