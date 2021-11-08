@@ -141,3 +141,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+SLACK_TOKEN = 'xoxb-195247247203-2691473125334-RZtG9tX2eK019nhETSrD6tih'
+SLACK_CHANNEL_ID = 'C02LBCRVB46'
