@@ -1,13 +1,35 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from django.contrib.admin.views.decorators import staff_member_required
+from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required, user_passes_test
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
 
 from medsenger_agent.models import Speaker
 from staff.models import Issue
+
+
+def publish_issue_to_slack(issue: Issue):
+    client = WebClient(token=settings.SLACK_TOKEN)
+
+    text = f"""Добавлена новая проблема с колонкой от *{issue.author.first_name}*:
+{issue.description} <http://{settings.DOMAIN}{issue.log_file.url}|Скачать лог>
+"""
+
+    try:
+        result = client.chat_postMessage(
+            channel=settings.SLACK_CHANNEL_ID,
+            text=text,
+            mrkdwn=True
+        )
+        print(result)
+
+    except SlackApiError as e:
+        print(f"Error: {e}")
 
 
 @staff_member_required
@@ -50,6 +72,21 @@ def receive_file(request, issue_id: int, speaker_token: str):
     for file in request.FILES:
         issue.log_file = request.FILES[file]
         issue.save()
+
+        publish_issue_to_slack(issue)
         break
 
     return HttpResponse()
+
+
+@require_http_methods(['GET', 'POST'])
+@user_passes_test(lambda u: u.is_superuser)
+def staff_main(request):
+    if request.method == 'POST':
+        issue = get_object_or_404(Issue, pk=request.POST.get('issue_id'))
+        issue.is_closed = True
+        issue.save()
+
+    return render(request, 'staff_main.html', {
+        'issues': Issue.objects.filter(is_closed=False)
+    })

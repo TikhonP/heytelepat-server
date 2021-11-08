@@ -1,0 +1,58 @@
+{% extends "staff_base.html" %}
+
+{% block body %}
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Heytelepat staff administration</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'staff-main' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'add-issue' %}">Add issue</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <h1>Issues</h1>
+
+        {% for issue in issues %}
+            <div class="mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Issue added by {{ issue.author.first_name|default:"lol" }}</h5>
+                        <p class="card-text">{{ issue.description }}</p>
+                        {% if issue.log_file %}
+                            <a href="{{ issue.log_file.url }}" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-file-arrow-down-fill" viewBox="0 0 16 16">
+                                    <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM8 5a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5A.5.5 0 0 1 8 5z"></path>
+                                </svg>
+                                Download log
+                            </a>
+                        {% else %}
+                            <a href="#" class="btn btn-primary disabled">Log file does not exist</a>
+                        {% endif %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="issue_id" value="{{ issue.pk }}">
+                            <button class="btn btn-secondary mt-2">❌ Close Issue</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-muted">
+                        {{ issue.date_created }}
+                    </div>
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

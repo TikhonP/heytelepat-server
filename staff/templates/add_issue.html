@@ -2,7 +2,9 @@
 
 {% block body %}
     <div class="container">
-        <h1>Heytelepat Issues</h1>
+        <div class="mt-3 mb-3">
+            <a class="navbar-brand text-dark" href="{% url 'staff-main' %}">Heytelepat Issues</a>
+        </div>
 
         {% if get %}
             <form method="post">
