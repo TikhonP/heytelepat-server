@@ -6,3 +6,4 @@ asgiref==3.4.1
 Django==3.2.7
 djangorestframework==3.12.4
 django_cleanup==5.2.0
+slack_sdk
