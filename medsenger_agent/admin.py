@@ -10,7 +10,7 @@ class ContractAdmin(admin.ModelAdmin):
 
 @admin.register(models.Speaker)
 class SpeakerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'contract', 'version')
+    list_display = ('serial_no', 'contract', 'version', 'user')
 
 
 admin.site.register(models.Message)
