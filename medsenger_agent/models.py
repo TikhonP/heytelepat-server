@@ -67,7 +67,8 @@ class MeasurementTaskGeneric(models.Model):
 class MedicineTaskGeneric(models.Model):
     medsenger_id = models.IntegerField()
     title = models.CharField(max_length=255)
-    rules = models.TextField()
+    rules = models.TextField("Medicine Task Rules", null=True, blank=True, default=None)
+    dose = models.TextField("Medicine dose", null=True, blank=True, default=None)
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
 
     date = models.DateTimeField(auto_now=True, blank=True)
