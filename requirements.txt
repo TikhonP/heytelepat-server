@@ -7,3 +7,4 @@ Django==3.2.7
 djangorestframework==3.12.4
 django_cleanup==5.2.0
 slack_sdk
+sentry-sdk==1.5.0
