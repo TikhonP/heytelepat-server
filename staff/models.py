@@ -6,9 +6,10 @@ from medsenger_agent.models import Speaker
 
 class Issue(models.Model):
     description = models.TextField("the issue")
-    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name="the related creator of issue")
+    author = models.ForeignKey(
+        get_user_model(), on_delete=models.SET_NULL, verbose_name="the related creator of issue", null=True)
     log_file = models.FileField("log for debugging", upload_to='issues/', null=True, blank=True, default=None)
-    speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE, verbose_name="the related speaker")
+    speaker = models.ForeignKey(Speaker, on_delete=models.SET_NULL, verbose_name="the related speaker", null=True)
 
     date_created = models.DateTimeField("date time created", auto_now_add=True)
     is_closed = models.BooleanField("is issue closed", default=False)
