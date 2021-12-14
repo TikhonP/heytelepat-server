@@ -28,7 +28,9 @@
             <div class="mb-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <h5 class="card-title">Issue added by {{ issue.author.first_name|default:"lol" }}</h5>
+                        <h5 class="card-title">Issue added
+                            by {{ issue.author.first_name|default:"Author has not first name or does not exist" }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ issue.speaker.serial_no|default:"Speaker Deleted" }}</h6>
                         <p class="card-text">{{ issue.description }}</p>
                         {% if issue.log_file %}
                             <a href="{{ issue.log_file.url }}" class="btn btn-primary">
@@ -51,7 +53,6 @@
                         {{ issue.date_created }}
                     </div>
                 </div>
-
             </div>
         {% endfor %}
     </div>
