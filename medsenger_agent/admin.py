@@ -16,4 +16,5 @@ class SpeakerAdmin(admin.ModelAdmin):
 admin.site.register(models.Message)
 admin.site.register(models.MeasurementTask)
 admin.site.register(models.MeasurementTaskGeneric)
+admin.site.register(models.MeasurementTaskGenericRadioVariant)
 admin.site.register(models.MedicineTaskGeneric)
