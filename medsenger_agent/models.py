@@ -50,6 +50,13 @@ class Speaker(models.Model):
         return f"Speaker {self.serial_no} ({self.id})"
 
 
+class MeasurementTaskGenericRadioVariant(models.Model):
+    category = models.CharField(max_length=255)
+    category_value = models.TextField()
+    custom_params = models.TextField(null=True, blank=True, default=None)
+    text = models.TextField()
+
+
 class MeasurementTaskGeneric(models.Model):
     uid = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
@@ -59,6 +66,8 @@ class MeasurementTaskGeneric(models.Model):
     text = models.CharField(max_length=255)
     value_type = models.CharField(max_length=255)
     prefix = models.CharField(max_length=255, null=True, default=None)
+    show_if = models.CharField(max_length=255, null=True, blank=True, default=None)
+    variants = models.ManyToManyField(MeasurementTaskGenericRadioVariant)
 
     def __str__(self):
         return "Category '{}' ({})".format(self.category, self.id)
