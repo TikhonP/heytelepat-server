@@ -8,15 +8,14 @@ from medsenger_agent.models import (
     MedicineTaskGeneric,
     Contract,
     Message,
+    MeasurementTaskGenericRadioVariant
 )
 
 aac = medsenger_api.AgentApiClient(settings.APP_KEY)
 
 
 class ApiKeyField(serializers.CharField):
-    """
-    ApiKeyField for api key validation
-    """
+    """ApiKeyField for api key validation"""
 
     def to_internal_value(self, data):
         if isinstance(data, bool) or not isinstance(data, (str, int, float,)):
@@ -28,7 +27,32 @@ class ApiKeyField(serializers.CharField):
         return value
 
 
+class MeasurementTaskGenericRadioVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MeasurementTaskGenericRadioVariant
+        fields = '__all__'
+
+
+class TaskGenericParamsSerializer(serializers.Serializer):
+    variants = MeasurementTaskGenericRadioVariantSerializer(many=True, required=False, read_only=True)
+
 class TaskGenericSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        # request = kwargs.get('context', {}).get('request')
+
+        super().__init__(*args, **kwargs)
+        print(self.context)
+        # if request:
+        #     print("hh:", request.data.get('fields'))
+        # else:
+        #     print("request.data.get('fields')")
+        #     print(kwargs, kwargs.get('context'))
+        #     print(self.fields)
+        # if request and request.META.get('REQUEST_METHOD') == 'POST':
+        #     self.fields['params'] = serializers.IntegerField(source='medsenger_id')
+
+    params = TaskGenericParamsSerializer()
+
     class Meta:
         model = MeasurementTaskGeneric
         fields = '__all__'
@@ -38,6 +62,7 @@ class TaskGenericSerializer(serializers.ModelSerializer):
         if 'request' in self.context:
             type_ = result.pop('value_type')
             result['type'] = type_
+        result.pop('variants')
         return result
 
 
@@ -46,6 +71,7 @@ class MedicineGenericSerializer(serializers.ModelSerializer):
         request = kwargs.get('context', {}).get('request')
 
         super().__init__(*args, **kwargs)
+
         if request is not None:
             self.fields['id'] = serializers.IntegerField(source='medsenger_id')
 
@@ -63,12 +89,13 @@ class TaskModelSerializer(serializers.ModelSerializer):
 
         super().__init__(*args, **kwargs)
 
+        print(self.context)
         if request and request.META.get('REQUEST_METHOD') == 'POST':
             self.fields['id'] = serializers.IntegerField(source='medsenger_id')
+        # self.fields['fields'] = TaskGenericSerializer(many=True)
 
-    contract = serializers.ReadOnlyField(
-        source='contract_id', )
-    fields = TaskGenericSerializer(many=True)
+    contract = serializers.ReadOnlyField(source='contract_id')
+    fields = TaskGenericSerializer(many=True, )
 
     class Meta:
         model = MeasurementTask
