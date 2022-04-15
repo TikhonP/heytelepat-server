@@ -21,6 +21,7 @@ from medsenger_agent.models import (
     MeasurementTask,
     MeasurementTaskGeneric,
     MedicineTaskGeneric,
+    MeasurementTaskGenericRadioVariant
 )
 from speakerapi.serializers import MessageSerializer
 
@@ -162,67 +163,75 @@ class OrderApiView(GenericAPIView):
     serializer_class = serializers.TaskSerializer
 
     def post(self, request):
-        print(request.data)
+        # print(request.data)
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            contract = get_object_or_404(
-                Contract,
-                contract_id=serializer.data['contract_id']
+        serializer.is_valid(raise_exception=True)
+        contract = get_object_or_404(
+            Contract,
+            contract_id=serializer.data['contract_id']
+        )
+
+        if serializer.data['order'] == 'form':
+            mt_data = serializer.data['params'].copy()
+            mt_data.pop('fields')
+
+            measurement_task, created = MeasurementTask.objects.get_or_create(contract=contract, **mt_data)
+
+            # print(serializer.data['params']['fields'])
+            if created:
+                for field in serializer.data['params']['fields']:
+                    mtg, _ = MeasurementTaskGeneric.objects.get_or_create(
+                        value_type=field.pop('type'), **field)
+
+                    if isinstance(field.get('params'), dict) and field.get('params').get('variants'):
+                        for variant in field.get('params').get('variants'):
+                            mtgrv, _ = MeasurementTaskGenericRadioVariant.objects.get_or_create(**variant)
+                            mtg.variants.add(mtgrv)
+
+                    measurement_task.fields.add(mtg)
+
+            else:
+                measurement_task.date = timezone.now()
+                measurement_task.is_sent = False
+                measurement_task.is_done = False
+                measurement_task.save()
+
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                'measurement_%s' % contract.contract_id,
+                {
+                    'type': 'receive_measurements',
+                    'data': serializers.TaskModelSerializer(
+                        measurement_task).data
+                }
             )
 
-            if serializer.data['order'] == 'form':
-                mt_data = serializer.data['params'].copy()
-                mt_data.pop('fields')
+            return HttpResponse('ok')
+        elif serializer.data['order'] == 'medicine':
+            m, created = MedicineTaskGeneric.objects.get_or_create(
+                contract=contract,
+                medsenger_id=serializer.data['params'].pop('id'),
+                **serializer.data['params']
+            )
+            if not created:
+                m.date = timezone.now()
+                m.is_sent = False
+                m.is_done = False
+                m.save()
 
-                measurement_task, created = MeasurementTask.objects.get_or_create(contract=contract, **mt_data)
+            out_serializer = serializers.MedicineGenericSerializer(m)
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                'medicine_%s' % contract.contract_id,
+                {
+                    'type': 'receive_medicine',
+                    'data': out_serializer.data
+                }
+            )
 
-                if created:
-                    for field in serializer.data['params']['fields']:
-                        mtg, _ = MeasurementTaskGeneric.objects.get_or_create(
-                            value_type=field.pop('type'), **field)
-                        measurement_task.fields.add(mtg)
-                else:
-                    measurement_task.date = timezone.now()
-                    measurement_task.is_sent = False
-                    measurement_task.is_done = False
-                    measurement_task.save()
-
-                channel_layer = get_channel_layer()
-                async_to_sync(channel_layer.group_send)(
-                    'measurement_%s' % contract.contract_id,
-                    {
-                        'type': 'receive_measurements',
-                        'data': serializers.TaskModelSerializer(
-                            measurement_task).data
-                    }
-                )
-
-                return HttpResponse('ok')
-            elif serializer.data['order'] == 'medicine':
-                m, created = MedicineTaskGeneric.objects.get_or_create(
-                    contract=contract,
-                    medsenger_id=serializer.data['params'].pop('id'),
-                    **serializer.data['params']
-                )
-                if not created:
-                    m.date = timezone.now()
-                    m.is_sent = False
-                    m.is_done = False
-                    m.save()
-
-                out_serializer = serializers.MedicineGenericSerializer(m)
-                channel_layer = get_channel_layer()
-                async_to_sync(channel_layer.group_send)(
-                    'medicine_%s' % contract.contract_id,
-                    {
-                        'type': 'receive_medicine',
-                        'data': out_serializer.data
-                    }
-                )
-
-                return HttpResponse('ok')
-            else:
-                raise ValidationError(detail="Invalid order param")
+            return HttpResponse('ok')
+        else:
+            raise ValidationError(detail="Invalid order param")
 
 
 class IncomingMessageApiView(GenericAPIView):
