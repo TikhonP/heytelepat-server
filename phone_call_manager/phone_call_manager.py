@@ -16,24 +16,25 @@ VOXIMPLANT_SCENARIO_ID = ***REMOVED***
 VOXIMPLANT_CALLER_ID = '***REMOVED***'
 
 PATIENTS = [
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
 
     # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
     # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    # {'phone': '+79117666988', 'token': '***REMOVED***'},
+    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
 ]
 
 logging.basicConfig(

@@ -7,7 +7,7 @@ WorkingDirectory = /home/***REMOVED***/***REMOVED***-server/phone_call_manager
 
 User = ***REMOVED***
 
-ExecStart = /home/***REMOVED***/***REMOVED***-server/phone_call_manager/env/bin/python password_bot.py
+ExecStart = /home/***REMOVED***/***REMOVED***-server/phone_call_manager/env/bin/python phone_call_manager.py
 
 [Install]
 WantedBy = network-online.target
