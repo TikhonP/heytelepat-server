@@ -11,6 +11,7 @@ urlpatterns = [
     path('measurement/categories/', views.GetListOfAllCategories.as_view(),
          name='speakerapi-measurement-categories-list'),
     path('measurement/push/', views.SendValueAPIView.as_view(), name='speakerapi-measurement-push'),
+    path('measurement/call/push/', views.SendValueFromCallAPIView.as_view(), name='speakerapi-measurement-call-push'),
     path('medicine/', views.MedicineListAPIView.as_view(), name='speakerapi-medicine'),
     path('medicine/commit/', views.CommitMedicineApiView.as_view(), name='speakerapi-medicine-commit'),
     path('firmware/', views.CheckFirmwareAPIView.as_view(), name='speakerapi-firmware'),

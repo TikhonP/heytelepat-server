@@ -106,34 +106,50 @@ class CheckFirmwareAPIView(GenericAPIView):
 
         return Response(context)
 
+def push_data_to_medsenger(values: list, contract_id: int):
+    if len(values) == 1:
+        aac.add_record(
+            contract_id,
+            values[0]['category_name'],
+            values[0]['value'],
+        )
+    else:
+        aac.add_records(
+            contract_id,
+            [[i[j] for j in i] for i in values]
+        )
 
 class SendValueAPIView(GenericAPIView):
     serializer_class = serializers.SendValueSerializer
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        if serializer.is_valid(raise_exception=True):
-            try:
-                s = Speaker.objects.get(
-                    token=serializer.data['token'])
-            except Speaker.DoesNotExist:
-                raise ValidationError(detail='Invalid Token')
+        try:
+            s = Speaker.objects.get(
+                token=serializer.data['token'])
+        except Speaker.DoesNotExist:
+            raise ValidationError(detail='Invalid Token')
 
-            if len(serializer.data['values']) == 1:
-                aac.add_record(
-                    s.contract.contract_id,
-                    serializer.data['values'][0]['category_name'],
-                    serializer.data['values'][0]['value'],
-                )
-            else:
-                data = [[i[j] for j in i] for i in serializer.data['values']]
-                aac.add_records(
-                    s.contract.contract_id,
-                    data
-                )
+        push_data_to_medsenger(serializer.data.get('values'), s.contract.contract_id) 
+        return Response(['ok'])
 
-            return Response(['ok'])
+
+class SendValueFromCallAPIView(GenericAPIView):
+    serializer_class = serializers.SendValueFromCall
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            s = Speaker.objects.get(phone=serializer.data.get('phone'))
+        except Speaker.DoesNotExist:
+            raise ValidationError(detail='Patient with this phone does not exists.')
+
+        push_data_to_medsenger(serializer.data.get('values'), s.contract.contract_id)
+        return Response(['ok'])
 
 
 class SendMessageApiView(APIView):

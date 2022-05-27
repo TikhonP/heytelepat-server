@@ -66,6 +66,9 @@ class SendValueSerializer(serializers.Serializer):
     token = serializers.CharField()
     values = serializers.ListField(child=DataSendValuesSerializer())
 
+class SendValueFromCall(serializers.Serializer):
+    phone = serializers.CharField()
+    values = serializers.ListField(child=DataSendValuesSerializer())
 
 class CommitMedicineSerializer(serializers.Serializer):
     token = serializers.CharField()

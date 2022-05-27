@@ -21,6 +21,7 @@ class Speaker(models.Model):
     contract = models.ForeignKey(
         Contract, null=True, default=None, on_delete=models.CASCADE)
     version = models.CharField(default='null', max_length=13)
+    phone = models.CharField(max_length=13, default=None, null=True)
 
     serial_no = models.CharField(
         "the serial number of speaker",
@@ -37,7 +38,6 @@ class Speaker(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            print("Creating new speaker")
             self.token = secrets.token_urlsafe(16)
             self.code = random.randint(100000, 999999)
 
