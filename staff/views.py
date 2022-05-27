@@ -26,10 +26,8 @@ def publish_issue_to_slack(issue: Issue):
             text=text,
             mrkdwn=True
         )
-        print(result)
-
     except SlackApiError as e:
-        print(f"Error: {e}")
+        print(f"Error push to slack: {e}")
 
 
 @staff_member_required
@@ -68,7 +66,6 @@ def receive_file(request, issue_id: int, speaker_token: str):
     if issue.speaker != speaker:
         return HttpResponseBadRequest("Issue not related to this speaker")
 
-    print(request.FILES)
     for file in request.FILES:
         issue.log_file = request.FILES[file]
         issue.save()

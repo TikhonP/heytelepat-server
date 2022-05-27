@@ -41,7 +41,7 @@ class TaskGenericSerializer(serializers.ModelSerializer):
         # request = kwargs.get('context', {}).get('request')
 
         super().__init__(*args, **kwargs)
-        print(self.context)
+        # print(self.context)
         # if request:
         #     print("hh:", request.data.get('fields'))
         # else:
@@ -89,7 +89,7 @@ class TaskModelSerializer(serializers.ModelSerializer):
 
         super().__init__(*args, **kwargs)
 
-        print(self.context)
+        # print(self.context)
         if request and request.META.get('REQUEST_METHOD') == 'POST':
             self.fields['id'] = serializers.IntegerField(source='medsenger_id')
         # self.fields['fields'] = TaskGenericSerializer(many=True)
