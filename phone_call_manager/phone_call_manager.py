@@ -7,35 +7,25 @@ Manager calls all patients with specific scenario with voximplant
 import requests
 import json
 import logging
+import os.path
+from pathlib import Path
+import dotenv
+
+from patients import PATIENTS
 
 __version__ = '0.0.1'
 
-VOXIMPLANT_ACCESS_TOKEN = '***REMOVED***'
-VOXIMPLANT_ACCOUNT_NAME = '***REMOVED***'
-VOXIMPLANT_SCENARIO_ID = ***REMOVED***
-VOXIMPLANT_CALLER_ID = '***REMOVED***'
+BASE_DIR = Path(__file__).resolve().parent
 
-PATIENTS = [
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    {'phone': '***REMOVED***', 'token': '***REMOVED***'},
+dotenv_file = BASE_DIR / ".env"
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
 
-    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-    # {'phone': '***REMOVED***', 'token': '***REMOVED***'},
-]
+VOXIMPLANT_ACCESS_TOKEN = os.getenv('VOXIMPLANT_ACCESS_TOKEN')
+VOXIMPLANT_ACCOUNT_NAME = os.getenv('VOXIMPLANT_ACCOUNT_NAME')
+VOXIMPLANT_SCENARIO_ID = os.getenv('VOXIMPLANT_SCENARIO_ID')
+VOXIMPLANT_CALLER_ID = os.getenv('VOXIMPLANT_CALLER_ID')
+
 
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO

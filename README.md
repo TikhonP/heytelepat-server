@@ -1,6 +1,6 @@
-# ***REMOVED***-server
+# heytelepat-server
 
-Server for ***REMOVED*** medsenger speaker
+Server for heytelepat medsenger speaker
 
 [API DOCS](docs.md)
 

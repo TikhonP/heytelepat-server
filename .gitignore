@@ -133,4 +133,5 @@ dmypy.json
 
 static/
 .idea/
-***REMOVED***/media/
+heytelepat/media/
+phone_call_manager/patients.py

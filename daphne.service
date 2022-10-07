@@ -3,11 +3,11 @@ Description = WebSocket Daphne Service
 After = network.target
 
 [Service]
-Environment = DJANGO_SETTINGS_MODULE=***REMOVED***.settings.production
+Environment = DJANGO_SETTINGS_MODULE=heytelepat.settings.production
 Type = simple
 User = root
-WorkingDirectory = /home/***REMOVED***/***REMOVED***-server
-ExecStart = /home/***REMOVED***/***REMOVED***-server/env/bin/python /home/***REMOVED***/***REMOVED***-server/env/bin/daphne -b 0.0.0.0 -p 8001 ***REMOVED***.asgi:application
+WorkingDirectory = /home/tikhon/heytelepat-server
+ExecStart = /home/tikhon/heytelepat-server/env/bin/python /home/tikhon/heytelepat-server/env/bin/daphne -b 0.0.0.0 -p 8001 heytelepat.asgi:application
 Restart = on-failure
 
 [Install]

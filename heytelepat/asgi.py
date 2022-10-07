@@ -1,5 +1,5 @@
 """
-ASGI config for ***REMOVED*** project.
+ASGI config for heytelepat project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

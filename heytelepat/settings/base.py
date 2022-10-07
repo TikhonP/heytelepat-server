@@ -13,7 +13,7 @@ if os.path.isfile(dotenv_file):
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
-    '***REMOVED***',
+    'dp9)ss*07b=7fq%agd459-+j$k^18#eg@#m6eg22jglz6(q3x)',
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = '***REMOVED***.urls'
+ROOT_URLCONF = 'heytelepat.urls'
 
 TEMPLATES = [
     {
@@ -70,8 +70,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = '***REMOVED***.wsgi.application'
-ASGI_APPLICATION = '***REMOVED***.asgi.application'
+WSGI_APPLICATION = 'heytelepat.wsgi.application'
+ASGI_APPLICATION = 'heytelepat.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

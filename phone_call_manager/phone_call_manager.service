@@ -3,11 +3,11 @@ Description = Heytelepat Phone Call
 
 [Service]
 Type = oneshot
-WorkingDirectory = /home/***REMOVED***/***REMOVED***-server/phone_call_manager
+WorkingDirectory = /home/tikhon/heytelepat-server/phone_call_manager
 
-User = ***REMOVED***
+User = tikhon
 
-ExecStart = /home/***REMOVED***/***REMOVED***-server/phone_call_manager/env/bin/python phone_call_manager.py
+ExecStart = /home/tikhon/heytelepat-server/phone_call_manager/env/bin/python phone_call_manager.py
 
 [Install]
 WantedBy = network-online.target
